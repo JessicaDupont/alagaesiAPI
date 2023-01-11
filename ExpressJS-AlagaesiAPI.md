@@ -1,6 +1,7 @@
-# Étapes d'un projet
+# Étapes du projet
 1. [Création du projet](#création-du-projet)
 2. [Structure de l'application](#structure)
+3. [CRUD oeuvres]()
 ---
 ---
 # Création du projet
