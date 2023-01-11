@@ -1,6 +1,14 @@
-# Étapes d'un projet
+# Étapes du projet
 1. [Création du projet](#création-du-projet)
-2. [Structure de l'application](#structure)
+    1. [Installations](#installations)
+    2. [Création](#création-du-projet-en-nodejs)
+    3. [Initialisation](#initialisation)
+        1. [.env](#paquet-env)
+        2. [Nodemon](#paquet-nodemon)
+    4. [ExpressJS](#mise-en-place-de-expressjs)
+    5. [Git](#initialisation-git)
+2. [Structure](#structure)
+    1. [Routers](#routers)
 ---
 ---
 # Création du projet
@@ -97,9 +105,9 @@ Doc : [www.npmjs.com/package/dotenv](https://www.npmjs.com/package/dotenv)
     * fichier ajouté : *package-lock.json*
     * fichier modifié : *package.json*
 3. utilisation:
-    1. *.env* : `PORT="3000"`
+    1. *.env* : `PORT_LOCAL="3000"`
     2. *app.js* (import): `require('dotenv').config();`
-    3. *app.js* (utilisation): `process.env.PORT`
+    3. *app.js* (utilisation): `process.env.PORT_LOCAL`
 ### Paquet Nodemon
 Doc : [www.npmjs.com/package/nodemon](https://www.npmjs.com/package/nodemon)
 1. `ctrl`+`ù` : ouvrir le terminal
@@ -108,7 +116,24 @@ Doc : [www.npmjs.com/package/nodemon](https://www.npmjs.com/package/nodemon)
 ## Mise en place de ExpressJS
 1. `ctrl`+`ù` : ouvrir le terminal
 2. `npm i --save express`
-3. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
+3. rempalcer le code de *app.js*
+```js
+require('dotenv').config();
+var express = require('express');
+var app = express();
+
+const hostname = '127.0.0.1';
+const port = process.env.PORT || process.env.PORT_LOCAL;
+
+app.get('/', function(req, res){
+  res.send('Hello World')
+});
+
+app.listen(port, ()=>{
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+```
+4. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
 ## Initialisation Git
 1. fichier *.gitignore*
     1. créer le fichier *.gitignore*
@@ -116,10 +141,31 @@ Doc : [www.npmjs.com/package/nodemon](https://www.npmjs.com/package/nodemon)
 2. utiliser git via Github Desktop
 # Structure
 * [Routers](#routers)
-* [Controllers](#controllers)
-* [Models](#models)
-* [Middlewares](#middlewares)
+1. Créer dossier *controllers*
+2. Créer dossier *models*
+3. Créer dossier *middlewares*
 ## Routers
-## Controllers
-## Models
-## Middlewares
+1. Créer un dossier *routers*
+2. Créer un fichier *router.js* dans le dossier *routers*
+3. Initialisation
+    1. *.env* : `VERSION_API="v1"`
+    2. *routers.js*, copier le code suivant:
+    ```js
+    const express = require('express');
+    const router = express.Router();
+    require('dotenv').config();
+
+    //require middlewares
+
+    //require routers par controller
+
+    //utilisation
+    router.get("/", function(req, res){res.send('Hello World')});
+
+    module.exports = router;
+    ```
+    3. *app.js*, remplace `app.get(...`
+    ```js
+    const router = require('./routers/router');
+    app.use(router);
+    ```
