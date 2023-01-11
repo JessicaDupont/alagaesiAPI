@@ -108,7 +108,24 @@ Doc : [www.npmjs.com/package/nodemon](https://www.npmjs.com/package/nodemon)
 ## Mise en place de ExpressJS
 1. `ctrl`+`ù` : ouvrir le terminal
 2. `npm i --save express`
-3. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
+3. rempalcer le code de *app.js*
+```js
+require('dotenv').config();
+var express = require('express');
+var app = express();
+
+const hostname = '127.0.0.1';
+const port = process.env.PORT;
+
+app.get('/', function(req, res){
+  res.send('Hello World')
+});
+
+app.listen(port, ()=>{
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+```
+4. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
 ## Initialisation Git
 1. fichier *.gitignore*
     1. créer le fichier *.gitignore*
