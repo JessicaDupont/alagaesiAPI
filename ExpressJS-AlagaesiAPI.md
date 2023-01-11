@@ -1,6 +1,6 @@
 # Étapes d'un projet
 1. [Création du projet](#création-du-projet)
-2.  [Structure de l'application](#structure)
+2. [Structure de l'application](#structure)
 ---
 ---
 # Création du projet
@@ -110,12 +110,10 @@ Doc : [www.npmjs.com/package/nodemon](https://www.npmjs.com/package/nodemon)
 2. `npm i --save express`
 3. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
 ## Initialisation Git
-1. `ctrl`+`ù` : ouvrir le terminal
-2. `git config --global user.email monadresse@email.net`
-3. `git init`
-4. fichier *.gitignore*
+1. fichier *.gitignore*
     1. créer le fichier *.gitignore*
     2. copier/coller le contenu de [github/gitignore](https://github.com/github/gitignore/blob/main/Node.gitignore) dans le fichier créé précédement.
+2. utiliser git via Github Desktop
 # Structure
 * [Routers](#routers)
 * [Controllers](#controllers)
