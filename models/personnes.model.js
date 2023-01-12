@@ -1,4 +1,4 @@
-const dbConnect = require("./database/connect2db").get();
+const dbConnect = require("../context/database/connect2db").get();
 
 const personnesModel = {
     create : (prenoms, nom) => {
@@ -24,7 +24,7 @@ const personnesModel = {
         return dbConnect.then((db) =>{
             return db.query('update personnes '
             +'set prenoms=?, nom=? '
-            +'where personne_id=?', [id])
+            +'where personne_id=?', [prenoms, nom, id])
         })
     },
     delete : (id) =>{

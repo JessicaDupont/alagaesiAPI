@@ -6,7 +6,7 @@ const express = require('express');
 const app = express();
 
 //Connexion à la DB
-const dbConnection = require("./models/database/connect2db");
+const dbConnection = require("./context/database/connect2db");
 dbConnection.connect();
 
 //json / html
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 //routing
 const router = require('./routers/router');
 app.use(router);
-// app.all('*', (req, res) =>{res.status(404).json({message : "url incorrecte"})})
+app.all('*', (req, res) =>{res.status(404).json({message : "url incorrecte"})})
 
 //serveur
 const hostname = process.env.HOST || process.env.HOST_LOCAL;
