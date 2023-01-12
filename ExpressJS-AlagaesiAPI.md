@@ -9,7 +9,7 @@
     5. [Git](#initialisation-git)
 2. [Structure](#structure)
     1. [Routers](#routers)
-3. [CRUD oeuvres]()
+3. [Module oeuvres](#module-oeuvres)
 ---
 ---
 # Création du projet
@@ -141,10 +141,99 @@ app.listen(port, ()=>{
     2. copier/coller le contenu de [github/gitignore](https://github.com/github/gitignore/blob/main/Node.gitignore) dans le fichier créé précédement.
 2. utiliser git via Github Desktop
 # Structure
+* [Database](#database)
+* [Json / HTML](#jsonhtml)
 * [Routers](#routers)
 1. Créer dossier *controllers*
 2. Créer dossier *models*
 3. Créer dossier *middlewares*
+4. Créer dossier *sql*
+## Database
+### MySQL
+> pour un travail en local, il est nécessaire d'avoir installer un serveur virtuel tel que [Xampp](https://www.apachefriends.org/fr/index.html).
+1. `ctrl`+`ù` : ouvrir le terminal
+2. `npm i promise-mysql`
+3. Dans *.env*, mettre les données de la database. le fichier devrait ressembler à ceci:
+```c
+# global
+VERSION_API="v1"
+# local
+HOST_LOCAL="127.0.0.1"
+PORT_LOCAL="3000"
+DB_HOST_LOCAL=""
+DB_USER_LOCAL=""
+DB_PASSWORD_LOCAL=""
+DB_PORT_LOCAL=""
+DB_NAME_LOCAL=""
+DB_CONNECT_LIMIT_LOCAL=""
+# prod
+HOST=""
+PORT=""
+DB_HOST=""
+DB_USER=""
+DB_PASSWORD=""
+DB_PORT=""
+DB_NAME=""
+DB_CONNECT_LIMIT=""
+```
+4. Connexion à la DB
+    1. Dans *models*, créer un dossier *database*
+    2. Dans *database*, créer un fichier *connect2db.js*
+    3. Mettre le code suivant dans le fichier *connect2db.js*
+    ```js
+    require('dotenv').config();
+    const mysql = require("promise-mysql");
+
+    let db;
+
+    module.exports = {
+
+        connect : () => {
+            if(!db){
+                db_host = process.env.DB_HOST || process.env.DB_HOST_LOCAL;
+                db_user = process.env.DB_USER || process.env.DB_USER_LOCAL;
+                db_password = process.env.DB_PASSWORD || process.env.DB_PASSWORD_LOCAL;
+                db_port = process.env.DB_PORT || process.env.DB_PORT_LOCAL;
+                db_name = process.env.DB_NAME || process.env.DB_NAME_LOCAL;
+                db_limit = process.env.DB_CONNECT_LIMIT || process.env.DB_CONNECT_LIMIT_LOCAL;
+
+                db = mysql.createPool({
+                    host : db_host,
+                    user : db_user,
+                    password : db_password,
+                    port : db_port,
+                    database : db_name,
+                    connectionLimit : db_limit
+                })
+            }
+        },
+
+        get : () => {
+            if(!db){
+                console.log(db);
+                throw new Error("Connexion non établie")
+            }
+            else
+                return db;
+        }
+    }
+    ```
+5. Dans *app.js*, mettre le code suivant vers le début du document:
+```js
+const dbConnection = require("./models/database/connect2db");
+dbConnection.connect();
+```
+## Json/HTMl
+### Body-Parser
+1. `ctrl`+`ù` : ouvrir le terminal
+2. `npm i body-parser`
+3. Dans *app.js*, mettre le code suivant:
+```js
+//json / html
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+```
 ## Routers
 1. Créer un dossier *routers*
 2. Créer un fichier *router.js* dans le dossier *routers*
@@ -170,3 +259,18 @@ app.listen(port, ()=>{
     const router = require('./routers/router');
     app.use(router);
     ```
+# Module oeuvres
+## SQL
+### scripts de création de tables
+* personnes.sql
+* oeuvres.sql
+* personnes_oeuvres.sql
+## model
+>Les models servent à récupérer les informations en base de données via des fonctions CRUD: create, getAll, getOne, update, delete, ...
+* personnes.model.js
+* oeuvres.model.js
+## controller
+* personnes.controller.js
+## router
+* personnes.router.js
+* *router.js* à modifier
