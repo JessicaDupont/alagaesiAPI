@@ -4,6 +4,7 @@ const oeuvresController = require("../controllers/oeuvres.controller");
 const oeuvresRouter = express.Router();
 
 oeuvresRouter.get('/', oeuvresController.getAll)
+oeuvresRouter.get('/types', oeuvresController.getAllTypeOeuvre)
 
 oeuvresRouter.post('/', oeuvresController.create)
 oeuvresRouter.get('/:id([0-9]+)', oeuvresController.getOne)//.../api/v1/oeuvres/3

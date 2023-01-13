@@ -1,4 +1,5 @@
 const oeuvresModel = require("../models/oeuvres.model");
+const personnesModel = require("../models/personnes.model")
 
 let errorNotExist = "Cette oeuvre n'existe pas."
 let validateUpdate = "L'oeuvre a bien été modifiée."
@@ -13,10 +14,17 @@ const oeuvresController = {
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },
+    getAllTypeOeuvre : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".getAllTypeOeuvre")}
+        //TODO
+    },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
         oeuvresModel.getAll()
-        .then((all) => {res.status(200).json(all)})
+        .then((all) => {
+            //TODO ajouter les personnes
+            res.status(200).json(all)
+        })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
     getOne : (req, res) => {
@@ -24,8 +32,17 @@ const oeuvresController = {
         let id = req.params.id;
         oeuvresModel.getOne(id)
         .then((one) => {
-            if(one[0]) {res.status(200).json(one)}
-            else {res.status(404).json({message : errorNotExist})}
+            if(one[0]) {
+                personnesModel.getByOeuvre(one[0].oeuvre_id)
+                .then((pers)=>{
+                    one[0].personnes = pers;
+                    res.status(200).json(one)
+                })
+                .catch((error)=>{
+                    one[0].personnes = "";
+                    res.status(200).json(one)
+                });
+            }else {res.status(404).json({message : errorNotExist})}
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },

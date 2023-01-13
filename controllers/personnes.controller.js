@@ -15,6 +15,7 @@ const personnesController = {
     },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
+        // personnesModel.getByOeuvre(1)
         personnesModel.getAll()
         .then((all) => {res.status(200).json(all)})
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
