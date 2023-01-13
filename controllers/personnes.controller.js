@@ -20,6 +20,13 @@ const personnesController = {
         .then((all) => {res.status(200).json(all)})
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
+    getAllByOeuvre : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".getAllByOeuvre")}
+        let oeuvreId = req.params.id;
+        personnesModel.getByOeuvre(oeuvreId)
+        .then((all) => {res.status(200).json(all)})
+        .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
+    },
     getOne : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getOne")}
         let id = req.params.id;

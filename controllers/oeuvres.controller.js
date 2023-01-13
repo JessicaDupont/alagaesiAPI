@@ -14,9 +14,11 @@ const oeuvresController = {
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },
-    getAllTypeOeuvre : (req, res) => {
-        if(process.env.CONSOLE_LOG){console.log(nomControler+".getAllTypeOeuvre")}
-        //TODO
+    getTypesOeuvre : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".getTypesOeuvre")}
+        oeuvresModel.getTypesOeuvre()
+        .then((all) => {res.status(200).json(all)})
+        .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}

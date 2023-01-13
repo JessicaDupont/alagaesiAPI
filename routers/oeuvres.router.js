@@ -3,8 +3,9 @@ const oeuvresController = require("../controllers/oeuvres.controller");
 
 const oeuvresRouter = express.Router();
 
+//api/v1/oeuvres
 oeuvresRouter.get('/', oeuvresController.getAll)
-oeuvresRouter.get('/types', oeuvresController.getAllTypeOeuvre)
+oeuvresRouter.get('/types', oeuvresController.getTypesOeuvre)
 
 oeuvresRouter.post('/', oeuvresController.create)
 oeuvresRouter.get('/:id([0-9]+)', oeuvresController.getOne)//.../api/v1/oeuvres/3

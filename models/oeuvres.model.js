@@ -1,7 +1,5 @@
 const dbConnect = require("../context/database/connect2db").get();
 let nomModel = "oeuvresModel";
-const fsPromise = require('fs/promises');
-const path = require('path');
 
 const oeuvresModel = {
     create : (titre) => {
@@ -11,15 +9,19 @@ const oeuvresModel = {
             +'values (?)', [titre])
         })
     },
-    getAllTypeOeuvre : () =>{
-        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllTypeOeuvre")}
-        //TODO
+    getTypesOeuvre : () =>{
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getTypesOeuvre")}
+        return dbConnect.then((db) =>{
+            return db.query('select * '
+            +'from types_oeuvre')
+        })
     },
     getAll : () =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getAll")}
         return dbConnect.then((db) =>{
             return db.query('select * '
-            +'from oeuvres')
+            +'from oeuvres o '
+            +'join types_oeuvre t on t.type_oeuvre_id = o.type_oeuvre_id')
         })
     },
     getOne : (id) =>{
