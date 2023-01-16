@@ -24,7 +24,6 @@ const oeuvresController = {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
         oeuvresModel.getAll()
         .then((all) => {
-            //TODO ajouter les personnes
             res.status(200).json(all)
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})

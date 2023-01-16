@@ -23,16 +23,15 @@ const oeuvresModel = {
         return dbConnect.then((db) =>{
             return db.query(
                 'select * '
-                +'from oeuvres o '
-                +'join types_oeuvre t on t.type_oeuvre_id = o.type_oeuvre_id')
+                +'from v_oeuvres')
         })
     },
     getOne : (id) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+id)}
         return dbConnect.then((db) =>{
             return db.query(
-                'select *, "personnes" '
-                +'from oeuvres '
+                'select *, "personnes"'
+                +'from v_oeuvres '
                 +'where oeuvre_id=?', [id])
         })
     },
