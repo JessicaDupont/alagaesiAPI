@@ -1,13 +1,18 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-require('dotenv').config();
 
 //require middlewares
 
 //require routers par controller
+const personnesRouter = require("./personnes.router");
+const oeuvresRouter = require("./oeuvres.router");
 
 //utilisation
 router.get("/", function(req, res){res.send('Hello World')});
-router.get("/api/"+process.env.VERSION+"/", function(req, res){res.send('Hello World')});
+    //api/v1
+router.get("/api/v1", function(req, res){res.send('Hello API')});
+router.use("/api/v1/personnes", personnesRouter);
+router.use("/api/v1/oeuvres", oeuvresRouter);
 
 module.exports = router;
