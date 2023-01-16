@@ -23,7 +23,8 @@ const oeuvresModel = {
         return dbConnect.then((db) =>{
             return db.query(
                 'select * '
-                +'from v_oeuvres')
+                +'from v_oeuvres '
+                +'order by date_creation')
         })
     },
     getOne : (id) =>{
@@ -35,21 +36,22 @@ const oeuvresModel = {
                 +'where oeuvre_id=?', [id])
         })
     },
-    update : (id, prev, titre, type, creation, img, resume, edition, isbn) =>{
+    update : (id, prev, titre, createur_id, type, creation, img, resume, edition, isbn) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".update/"+id+"/"+titre)}
         return dbConnect.then((db) =>{
             return db.query(
                 'update oeuvres set '
-                +'oeuvre_precedente=?, '
+                +'oeuvre_precedente_id=?, '
                 +'titre=?, '
+                +'createur_id=?, '
                 +'type_oeuvre_id=?, '
                 +'date_creation=?, '
                 +'image_url=?, '
                 +'couverture=?, '
                 +'maison_edition=?, '
-                +'isbn=?, '
+                +'isbn=? '
                 +'where oeuvre_id=?', 
-                [prev, titre, type, creation, img, resume, edition, isbn, id])
+                [prev, titre, createur_id, type, creation, img, resume, edition, isbn, id])
         })
     },
     delete : (id) =>{

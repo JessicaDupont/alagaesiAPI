@@ -50,12 +50,12 @@ const oeuvresController = {
     update : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
         let id = req.params.id;
-        let {oeuvre_precedente, titre, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn} = req.body;
+        let {oeuvre_precedente, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn} = req.body;
         if(id && titre){
             oeuvresModel.getOne(id)
             .then((one) =>{
                 if(one[0]){
-                    oeuvresModel.update(id, oeuvre_precedente, titre, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn)
+                    oeuvresModel.update(id, oeuvre_precedente, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}
@@ -65,22 +65,23 @@ const oeuvresController = {
     },
     merge : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".merge")}
-        let {oeuvre_precedente, titre, type_oeuvre_id, date_creation, image_url, couverture, maison_edition, isbn} = req.body;
+        // let {oeuvre_precedente, titre, createur_id, type_oeuvre_id, date_creation, image_url, couverture, maison_edition, isbn} = req.body.;
         let id = req.params.id;
         if(id){
             oeuvresModel.getOne(id)
             .then((one) =>{
                 if(one[0]){
-                    let new_oeuvre_precedente = oeuvre_precedente || one[0].oeuvre_precedente;
-                    let new_titre = titre || one[0].titre;
-                    let new_type_oeuvre_id = type_oeuvre_id || one[0].type_oeuvre_id;
-                    let new_date_creation = date_creation || one[0].date_creation;
-                    let new_image_url = image_url || one[0].image_url;
-                    let new_couverture = couverture || one[0].courverture;
-                    let new_maison_edition = maison_edition || one[0].maison_edition;
-                    let new_isbn = isbn || one[0].isbn;
+                    let new_oeuvre_precedente = req.body.oeuvre_precedente_id || one[0].oeuvre_precedente;
+                    let new_titre = req.body.titre || one[0].titre;
+                    let new_createur_id = req.body.createur_id || one[0].createur_id;
+                    let new_type_oeuvre_id = req.body.type_oeuvre_id || one[0].type_oeuvre_id;
+                    let new_date_creation = req.body.date_creation || one[0].date_creation;
+                    let new_image_url = req.body.image_url || one[0].image_url;
+                    let new_couverture = req.body.couverture || one[0].courverture;
+                    let new_maison_edition = req.body.maison_edition || one[0].maison_edition;
+                    let new_isbn = req.body.isbn || one[0].isbn;
 
-                    oeuvresModel.update(new_id, new_oeuvre_precedente, new_titre, new_type_oeuvre_id, new_date_creation, new_image_url, new_couverture, new_maison_edition, new_isbn)
+                    oeuvresModel.update(id, new_oeuvre_precedente, new_titre, new_createur_id, new_type_oeuvre_id, new_date_creation, new_image_url, new_couverture, new_maison_edition, new_isbn)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}

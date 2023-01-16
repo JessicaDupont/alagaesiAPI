@@ -1,12 +1,13 @@
 create view v_oeuvres as
 select 
     o.oeuvre_id as oeuvre_id, 
+    t.type_oeuvre_id as type_oeuvre_id, 
     t.nom as type_oeuvre, 
     o.titre as titre,
     c.personne_id as createur_id,
     concat_ws(' ', c.prenoms, c.nom) as createur,
     po.fonction as fonction,
-    o.date_creation as creation,
+    o.date_creation as date_creation,
     o.image_url as image_url,
     o.couverture as couverture,
     o.maison_edition as maison_edition,
@@ -20,4 +21,4 @@ left join oeuvres p on p.oeuvre_id = o.oeuvre_precedente_id
 left join personnes_oeuvres po on po.oeuvre_id = o.oeuvre_id
 left join personnes c on c.personne_id = o.createur_id
 group by po.oeuvre_id
-order by creation
+order by date_creation
