@@ -1,4 +1,5 @@
 const personnesModel = require("../models/personnes.model");
+const personnesOeuvresModel = require("../models/personnes_oeuvres.model");
 
 let errorNotExist = "Cette personne n'existe pas."
 let validateUpdate = "La personne a bien été modifiée."
@@ -23,7 +24,7 @@ const personnesController = {
     getAllByOeuvre : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAllByOeuvre")}
         let oeuvreId = req.params.id;
-        personnesModel.getByOeuvre(oeuvreId)
+        personnesOeuvresModel.getByOeuvre(oeuvreId)
         .then((all) => {res.status(200).json(all)})
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
@@ -46,6 +47,23 @@ const personnesController = {
             .then((one) =>{
                 if(one[0]){
                     personnesModel.update(id, prenoms, nom)
+                    .then((data)=>{res.status(200).json({message : validateUpdate})})
+                    .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
+                }else{res.status(500).json({message : errorNotExist})}
+            })
+            .catch((error)=>{res.status(500).json({message : error.sqlMessage})})
+        }
+    },
+    merge : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
+        let id = req.params.id;
+        if(id){
+            personnesModel.getOne(id)
+            .then((one) =>{
+                if(one[0]){
+                    let new_prenoms = req.body.prenoms ?? one[0].prenoms;
+                    let new_nom = req.body.nom ?? one[0].nom;
+                    personnesModel.update(id, new_prenoms, new_nom)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}

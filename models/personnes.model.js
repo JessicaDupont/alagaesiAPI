@@ -16,18 +16,6 @@ const personnesModel = {
             +'from personnes')
         })
     },
-    getByOeuvre : (oeuvreId) =>{
-        if(process.env.CONSOLE_LOG){console.log(nomModel+".getByOeuvre/"+oeuvreId)}
-        return dbConnect.then((db) =>{
-            return db.query('select p.personne_id as personne_id, '
-                +'p.prenoms as prenom, '
-                +'p.nom as nom, '
-                +'po.fonction as fonction '
-            +'from personnes p '
-            +'join personnes_oeuvres po on po.personne_id = p.personne_id '
-            +'where po.oeuvre_id=?', [oeuvreId])
-        })
-    },
     getOne : (id) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+id)}
         return dbConnect.then((db) =>{

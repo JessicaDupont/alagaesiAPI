@@ -1,5 +1,7 @@
 const oeuvresModel = require("../models/oeuvres.model");
 const personnesModel = require("../models/personnes.model")
+const typesOeuvresModel = require("../models/types_oeuvres.model")
+const personnesOeuvresModel = require("../models/personnes_oeuvres.model")
 
 let errorNotExist = "Cette oeuvre n'existe pas."
 let validateUpdate = "L'oeuvre a bien été modifiée."
@@ -13,12 +15,6 @@ const oeuvresController = {
         oeuvresModel.create(titre)
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
-    },
-    getTypesOeuvre : (req, res) => {
-        if(process.env.CONSOLE_LOG){console.log(nomControler+".getTypesOeuvre")}
-        oeuvresModel.getTypesOeuvre()
-        .then((all) => {res.status(200).json(all)})
-        .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
@@ -34,7 +30,7 @@ const oeuvresController = {
         oeuvresModel.getOne(id)
         .then((one) => {
             if(one[0]) {
-                personnesModel.getByOeuvre(one[0].oeuvre_id)
+                personnesOeuvresModel.getByOeuvre(one[0].oeuvre_id)
                 .then((pers)=>{
                     one[0].personnes = pers;
                     res.status(200).json(one)
@@ -50,12 +46,12 @@ const oeuvresController = {
     update : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
         let id = req.params.id;
-        let {oeuvre_precedente, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn} = req.body;
+        let {oeuvre_precedente_id, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn} = req.body;
         if(id && titre){
             oeuvresModel.getOne(id)
             .then((one) =>{
                 if(one[0]){
-                    oeuvresModel.update(id, oeuvre_precedente, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn)
+                    oeuvresModel.update(id, oeuvre_precedente_id, titre, createur_id, type_oeuvre_id, date_creation, image_url, courverture, maison_edition, isbn)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}
@@ -103,6 +99,29 @@ const oeuvresController = {
             })
             .catch((error)=>{res.status(500).json({message : error.sqlMessage})})
         }
+    },
+    //MODEL : personnes_oeuvres
+    addPersonne : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".addPersonne")}
+        let id = req.params.id;
+        let {personne_id, fonction, commentaire} = req.body;
+        personnesOeuvresModel.create(personne_id, id, fonction, commentaire)
+        .then((result) =>{res.status(201).json({id : result.insertId})})
+        .catch((error) =>{res.status(500).json({message : error.slqMessage})})
+    },
+    getAllByPersonne : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".getAllByPersonne")}
+        let id = req.params.id;
+        personnesOeuvresModel.getByPersonne(id)
+        .then((all) => {res.status(200).json(all)})
+        .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
+    },
+    //MODEL : types_oeuvres
+    getTypesOeuvre : (req, res) => {
+        if(process.env.CONSOLE_LOG){console.log(nomControler+".getTypesOeuvre")}
+        typesOeuvresModel.getAll()
+        .then((all) => {res.status(200).json(all)})
+        .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     }
 };
 

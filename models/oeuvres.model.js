@@ -10,14 +10,6 @@ const oeuvresModel = {
                 +'values (?)', [titre])
         })
     },
-    getTypesOeuvre : () =>{
-        if(process.env.CONSOLE_LOG){console.log(nomModel+".getTypesOeuvre")}
-        return dbConnect.then((db) =>{
-            return db.query(
-                'select * '
-                +'from types_oeuvre')
-        })
-    },
     getAll : () =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getAll")}
         return dbConnect.then((db) =>{
@@ -31,7 +23,7 @@ const oeuvresModel = {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+id)}
         return dbConnect.then((db) =>{
             return db.query(
-                'select *, "personnes"'
+                'select * '
                 +'from v_oeuvres '
                 +'where oeuvre_id=?', [id])
         })
