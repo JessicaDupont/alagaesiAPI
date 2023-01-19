@@ -6,9 +6,12 @@
         1. [.env](#paquet-env)
         2. [Nodemon](#paquet-nodemon)
     4. [ExpressJS](#mise-en-place-de-expressjs)
-    5. [Git](#initialisation-git)
+    5. [Swagger](#swagger)
+    6. [Git](#initialisation-git)
 2. [Structure](#structure)
-    1. [Routers](#routers)
+    1. [Database](#database)
+    2. [Json / HTML](#jsonhtml)
+    3. [Routers](#routers)
 3. [Module oeuvres](#module-oeuvres)
 ---
 ---
@@ -135,6 +138,20 @@ app.listen(port, ()=>{
 });
 ```
 4. `nodemon` pour exécuter l'application et vérifier que tout va toujours bien
+## Swagger
+1. `npm i swagger-ui-express`
+    * modification de *package-lock.json*
+    * modification de *package.json*
+2. `npm i yamljs`
+    * modification de *package-lock.json*
+    * modification de *package.json*
+3. dans *app.js* mettre le code suivant vers la fin du document
+```js
+const swaggerUi = require("swagger-ui-express")
+const yaml = require("yamljs")
+const swaggerDocument = yaml.load("./swagger.yml")
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+```
 ## Initialisation Git
 1. fichier *.gitignore*
     1. créer le fichier *.gitignore*
