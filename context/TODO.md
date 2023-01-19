@@ -28,13 +28,13 @@
 * `PATCH/chapitres/id + body` : modifier certaines informations d'1 chapitre
 * `DELETE/chapitres/id` : supprimer un chapitre
 ### table citations
-- `POST/citations + body` : créer 1 citation
-- `GET/citations` : liste de toutes les citations
-- `GET/citations/id` : infos d'1 citation
-- `GET/citations/oeuvre/id` : liste des citations d'1 oeuvre
-- `GET/citations/chapitre/id` : liste des citations d'un chapitre
-- `PATCH/citations/id + body` : modifier certaines infos d'une citation
-- `DELETE/citations/id` : supprimer 1 citation
+* `POST/citations + body` : créer 1 citation
+* `GET/citations` : liste de toutes les citations
+* `GET/citations/id` : infos d'1 citation
+* `GET/citations/oeuvre/id` : liste des citations d'1 oeuvre
+* `GET/citations/chapitre/id` : liste des citations d'un chapitre
+* `PATCH/citations/id + body` : modifier certaines infos d'une citation
+* `DELETE/citations/id` : supprimer 1 citation
 ---
 ## Module Fiches
 ### table fiche_categories
