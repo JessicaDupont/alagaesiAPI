@@ -7,6 +7,8 @@ const router = express.Router();
 //require routers par controller
 const personnesRouter = require("./personnes.router");
 const oeuvresRouter = require("./oeuvres.router");
+const chapitresRouter = require("./chapitres.router");
+const citationsRouter = require("./citations.router");
 
 //utilisation
 router.get("/", function(req, res){res.send('Hello World')});
@@ -14,5 +16,7 @@ router.get("/", function(req, res){res.send('Hello World')});
 router.get("/api/v1", function(req, res){res.send('Hello API')});
 router.use("/api/v1/personnes", personnesRouter);
 router.use("/api/v1/oeuvres", oeuvresRouter);
+router.use("/api/v1/chapitres", chapitresRouter);
+router.use("/api/v1/citations", citationsRouter);
 
 module.exports = router;
