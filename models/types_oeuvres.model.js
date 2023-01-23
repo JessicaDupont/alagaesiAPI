@@ -7,7 +7,7 @@ const typesOeuvresModel = {
         return dbConnect.then((db) =>{
             return db.query(
                 'select * '
-                +'from types_oeuvre')
+                +'from types_oeuvres')
         })
     }
 }

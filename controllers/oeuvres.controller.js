@@ -11,17 +11,15 @@ let nomControler = "oeuvresController"
 const oeuvresController = {
     create : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".create")}
-        let {titre} = req.body;
-        oeuvresModel.create(titre)
+        let {titre, createur_id} = req.body;
+        oeuvresModel.create(titre, createur_id)
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
         oeuvresModel.getAll()
-        .then((all) => {
-            res.status(200).json(all)
-        })
+        .then((all) => {res.status(200).json(all)})
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
     getOne : (req, res) => {
@@ -68,16 +66,14 @@ const oeuvresController = {
             .then((one) =>{
                 if(one[0]){
                     let new_oeuvre_precedente = req.body.oeuvre_precedente_id || one[0].oeuvre_precedente;
-                    let new_titre = req.body.titre || one[0].titre;
                     let new_createur_id = req.body.createur_id || one[0].createur_id;
                     let new_type_oeuvre_id = req.body.type_oeuvre_id || one[0].type_oeuvre_id;
+                    let new_titre = req.body.titre || one[0].titre;
                     let new_date_creation = req.body.date_creation || one[0].date_creation;
                     let new_image_url = req.body.image_url || one[0].image_url;
-                    let new_couverture = req.body.couverture || one[0].courverture;
-                    let new_maison_edition = req.body.maison_edition || one[0].maison_edition;
-                    let new_isbn = req.body.isbn || one[0].isbn;
+                    let new_resume = req.body.resume || one[0].resume;
 
-                    oeuvresModel.update(id, new_oeuvre_precedente, new_titre, new_createur_id, new_type_oeuvre_id, new_date_creation, new_image_url, new_couverture, new_maison_edition, new_isbn)
+                    oeuvresModel.update(id, new_oeuvre_precedente, new_titre, new_createur_id, new_type_oeuvre_id, new_date_creation, new_image_url, new_resume)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}
@@ -104,8 +100,8 @@ const oeuvresController = {
     addPersonne : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".addPersonne")}
         let id = req.params.id;
-        let {personne_id, fonction, commentaire} = req.body;
-        personnesOeuvresModel.create(personne_id, id, fonction, commentaire)
+        let {personne_id, fonction, date_fonction, description} = req.body;
+        personnesOeuvresModel.create(personne_id, id, fonction, date_fonction, description)
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },

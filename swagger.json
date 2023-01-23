@@ -1,0 +1,546 @@
+{ 
+  "swagger": "2.0", 
+  "info": { 
+    "version": "1.0.0",
+    "title": "AlagaesiAPI", 
+    "description": "Informations venues d'Alagaësia"
+  }, 
+  "consume": ["application/json"], 
+  "produit": ["application/json"],
+
+  "tags": [ 
+    { 
+      "name": "Oeuvres", 
+      "description": "Informations sur les oeuvres liés à l'univers d'Alagaësia."
+    },
+    { 
+      "name": "Chapitres", 
+      "description": "Chapitres ou portions liées aux oeuvres."
+    },
+    { 
+      "name": "Citations", 
+      "description": "Citations liées, ou non, à un chapitre."
+    },
+    { 
+      "name": "Personnes", 
+      "description": "Personnes réelles ayant rejoint l'univers d'Alagaësia."
+    },
+    { 
+      "name": "Fiches", 
+      "description": "Informations détaillées sur le monde d'Alagaësia."
+    }
+  ],
+
+  "paths": {
+    "/api/v1/oeuvres" : {
+        "post" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "Ajout d'une oeuvre",
+            "parameters" : [{
+                "name" : "nouvelle oeuvre",
+                "in" : "body",
+                "required" : true,
+                "description" : "informations pour la création d'une oeuvre",
+                "schema": {"$ref": "#/definitions/oeuvre_new"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/oeuvre"}
+                }
+            }
+        },
+        "get" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "Liste de toutes les oeuvres.",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/oeuvre_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/oeuvres/{id}" : {
+        "get" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "info d'une oeuvre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de l'oeuvre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/oeuvre_vue"}
+                }
+            }
+        },
+        "patch" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "modification d'une oeuvre",
+            "parameters" : [
+                {
+                    "name" : "id",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "id de l'oeuvre",
+                    "default" : "1"
+                },{
+                    "name" : "oeuvre_up",
+                    "in" : "body",
+                    "required" : true,
+                    "description" : "infos d'une oeuvre",
+                    "schema": {"$ref" : "#/definitions/oeuvre"}
+                }
+            ],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/oeuvre"}
+                }
+            }
+        },
+        "delete" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "suppression d'une oeuvre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de l'oeuvre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/oeuvre"}
+                }
+            }
+        }
+    },
+    "/api/v1/oeuvres/types" : {
+        "get" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "Liste de tout les types d'oeuvres.",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/type_oeuvre"}
+                }
+            }
+        }
+    },
+    "/api/v1/oeuvres/personne/{id}" : {
+        "post" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "Lié une personne à une oeuvre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de l'oeuvre",
+                "default" : "1"
+            },{
+                "name" : "nouveau lien",
+                "in" : "body",
+                "required" : true,
+                "description" : "permet de lier une personne à une oeuvre",
+                "schema": {"$ref": "#/definitions/personne_oeuvre"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/personne_oeuvre"}
+                }
+            }
+        },
+        "get" : {
+            "tags" : ["Oeuvres"],
+            "summary" : "liste des oeuvres liées à une personne",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la personne",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/oeuvre_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/chapitres" : {
+        "post" : {
+            "tags" : ["Chapitres"],
+            "summary" : "Ajout d'un chapitre",
+            "parameters" : [{
+                "name" : "nouveau chapitre",
+                "in" : "body",
+                "required" : true,
+                "description" : "informations pour la création d'un chapitre",
+                "schema": {"$ref": "#/definitions/chapitre_new"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/chapitre"}
+                }
+            }
+        },
+        "get" : {
+            "tags" : ["Chapitres"],
+            "summary" : "Liste de tout les chapitres",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/chapitre_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/chapitres/{id}" : {
+        "get" : {
+            "tags" : ["Chapitres"],
+            "summary" : "info d'un chapitre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id du chapitre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/chapitre_vue"}
+                }
+            }
+        },
+        "patch" : {
+            "tags" : ["Chapitres"],
+            "summary" : "modification d'un chapitre",
+            "parameters" : [
+                {
+                    "name" : "id",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "id du chapitre",
+                    "default" : "1"
+                },{
+                    "name" : "chapitre_up",
+                    "in" : "body",
+                    "required" : true,
+                    "description" : "infos d'un chapitre",
+                    "schema": {"$ref" : "#/definitions/chapitre"}
+                }
+            ],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/chapitre"}
+                }
+            }
+        },
+        "delete" : {
+            "tags" : ["Chapitres"],
+            "summary" : "suppression d'un chapitre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id du chapitre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/chapitre"}
+                }
+            }
+        }
+    },
+    "/api/v1/citations" : {
+        "post" : {"tags" : ["Citations"]},
+        "get" : {
+            "tags" : ["Citations"],
+            "summary" : "Liste de toutes les citations",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/citation_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/citations/{id}" : {
+        "get" : {
+            "tags" : ["Citations"],
+            "summary" : "info d'une citation",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la citation",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation_vue"}
+                }
+            }
+        },
+        "patch" : {"tags" : ["Citations"]},
+        "delete" : {"tags" : ["Citations"]}
+    },
+    "/api/v1/citations/oeuvre/{id}" : {
+        "get" : {
+            "tags" : ["Citations"],
+            "summary" : "Liste des citations liées à une oeuvre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de l'oeuvre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/citations/chapitre/{id}" : {
+        "get" : {
+            "tags" : ["Citations"],
+            "summary" : "Liste des citations liées à un chapitre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id du chapitre",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/fiches" : {
+        "post" : {"tags" : ["Fiches"]},
+        "get" : {"tags" : ["Fiches"]}
+    },
+    "/api/v1/fiches/{id}" : {
+        "get" : {
+            "tags" : ["Fiches"],
+            "summary" : "info d'une fiche",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la fiche",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/fiche_vue"}
+                }
+            }
+        },
+        "patch" : {"tags" : ["Fiches"]},
+        "delete" : {"tags" : ["Fiches"]}
+    },
+    "/api/v1/personnes" : {
+        "post" : {"tags" : ["Personnes"]},
+        "get" : {
+            "tags" : ["Personnes"],
+            "summary" : "Liste de toutes les personnes",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/personne_vue"}
+                }
+            }
+        }
+    },
+    "/api/v1/personnes/{id}" : {
+        "get" : {
+            "tags" : ["Personnes"],
+            "summary" : "info d'une personne",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la personne",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/personne_vue"}
+                }
+            }
+        },
+        "put" : {"tags" : ["Personnes"]},
+        "patch" : {"tags" : ["Personnes"]},
+        "delete" : {"tags" : ["Personnes"]}
+    },
+    "/api/v1/personnes/oeuvre/{id}" : {
+        "get" : {"tags" : ["Personnes"]}
+    }
+  },
+
+  "definitions": {
+    "type_oeuvre" : {
+        "properties" : {
+            "type_oeuvre_id" : {"type" : "integer"},
+            "nom" : {"type" : "string"}
+        }
+    },
+    "personne_oeuvre" : {
+        "required" : ["oeuvre_id", "personne_id"],
+        "properties" : {
+            "oeuvre_id" : {"type" : "integer"},
+            "personne_id" : {"type" : "integer"},
+            "fonction" : {"type" : "string"},
+            "date_fonction" : {"type" : "string"},
+            "description" : {"type" : "string"}
+        }
+    },
+    "oeuvre_new" : {
+        "required" : ["createur_id", "titre"],
+        "properties" : {
+            "createur_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"}
+        }
+    },
+    "oeuvre" : {
+        "required" : ["oeuvre_id", "createur_id", "titre"],
+        "properties" : {
+            "oeuvre_id" : {"type" : "integer"},
+            "oeuvre_precedente_id" : {"type" : "integer"},
+            "createur_id" : {"type" : "integer"},
+            "type_oeuvre_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "date_creation" : {"type" : "string"},
+            "image_url" : {"type" : "string"},
+            "resume" : {"type" : "string"}
+        }
+    },
+    "oeuvre_vue" : {
+        "properties" : {
+            "oeuvre_id" : {"type" : "integer"},
+            "oeuvre_precedente_id" : {"type" : "integer"},
+            "oeuvre_precedente_titre" : {"type" : "string"},
+            "createur_id" : {"type" : "integer"},
+            "createur_prenom" : {"type" : "string"},
+            "createur_nom" : {"type" : "string"},
+            "type_oeuvre_id" : {"type" : "integer"},
+            "type_oeuvre_nom" : {"type" : "string"},
+            "type_oeuvre_description" : {"type" : "string"},
+            "titre" : {"type" : "string"},
+            "date_creation" : {"type" : "string"},
+            "image_url" : {"type" : "string"},
+            "resume" : {"type" : "string"},
+            "nb_chapitres" : {"type" : "integer"},
+            "nb_personnes" : {"type" : "integer"}
+        }
+    },
+    "chapitre" : {
+        "required" : ["chapitre_id", "oeuvre_id", "titre", "ordre"],
+        "properties" : {
+            "chapitre_id" : {"type" : "integer"},
+            "oeuvre_id" : {"type" : "integer"},
+            "narrateur_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "ordre" : {"type" : "integer"},
+            "date_naine_debut" : {"type" : "string"},
+            "date_naine_fin" : {"type" : "string"}
+        }
+    },
+    "chapitre_new" : {
+        "required" : ["oeuvre_id", "titre", "ordre"],
+        "properties" : {
+            "oeuvre_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "ordre" : {"type" : "integer"}
+        }
+    },
+    "chapitre_vue" : {
+        "properties" : {
+            "chapitre_id" : {"type" : "integer"},
+            "oeuvre_id" : {"type" : "integer"},
+            "oeuvre_titre" : {"type" : "string"},
+            "narrateur_id" : {"type" : "integer"},
+            "narrateur_nom" : {"type" : "string"},
+            "titre" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "ordre" : {"type" : "integer"},
+            "date_naine_debut" : {"type" : "string"},
+            "date_naine_fin" : {"type" : "string"},
+            "nb_citations" : {"type" : "integer"},
+            "nb_fiches" : {"type" : "integer"}
+        }
+    },
+    "citation" : {
+        "properties" : {
+            "citation_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "chapitre_id" : {"type" : "integer"},
+            "texte" : {"type" : "string"},
+            "auteur_id" : {"type" : "integer"},
+            "ordre" : {"type" : "integer"},
+            "chronologie" : {"type" : "string"}
+        }
+    },
+    "citation_vue" : {
+        "properties" : {
+            "citation_id" : {"type" : "integer"},
+            "ordre" : {"type" : "integer"},
+            "chapitre_id" : {"type" : "integer"},
+            "chapitre_titre" : {"type" : "string"},
+            "titre" : {"type" : "string"},
+            "texte" : {"type" : "string"},
+            "chronologie" : {"type" : "string"},
+            "auteur_id" : {"type" : "integer"},
+            "auteur_nom" : {"type" : "string"}
+        }
+    },
+    "personne" : {
+        "properties" : {
+            "personne_id" : {"type" : "integer"},
+            "prenoms" : {"type" : "string"},
+            "nom" : {"type" : "string"}
+        }
+    },
+    "personne_vue" : {
+        "properties" : {
+            "personne_id" : {"type" : "integer"},
+            "prenoms" : {"type" : "string"},
+            "nom" : {"type" : "string"},
+            "nom_complet" : {"type" : "string"},
+            "nb_contributions" : {"type" : "integer"}
+        }
+    },
+    "fiche_vue" : {
+        "properties" : {
+            "fiche_id" : {"type" : "integer"},
+            "nom" : {"type" : "string"}
+        }
+    }
+  }
+}

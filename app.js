@@ -17,7 +17,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 //routing
 const router = require('./routers/router');
 app.use(router);
-app.all('*', (req, res) =>{res.status(404).json({message : "url incorrecte"})})
+
+//swagger
+const swaggerUi = require('swagger-ui-express'),
+swaggerDocument = require('./swagger.json');
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //serveur
 const hostname = process.env.HOST || process.env.HOST_LOCAL;
@@ -29,3 +33,4 @@ app.listen(port, ()=>{
     console.log(`Server running at http://${hostname}:${port}/api/${process.env.VERSION_API}/`);
   }
 });
+app.all('*', (req, res) =>{res.status(404).json({message : "url incorrecte"})})

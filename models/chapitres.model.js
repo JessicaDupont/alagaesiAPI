@@ -1,13 +1,13 @@
 const dbConnect = require("../context/database/connect2db").get();
-let nomModel = "chapitesModel";
+let nomModel = "chapitresModel";
 
 const chapitresModel = {
     create : (oeuvreId, ordre, titre) => {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+oeuvreId+"-"+ordre+"-"+titre)}
         return dbConnect.then((db) =>{
             return db.query(
-                'insert into chapitres (oeuvre_id, ordre, titre) '
-                +'values (?, ?, ?) ;', [oeuvreId, ordre, titre]
+                'insert into chapitres (oeuvre_id, titre, ordre) '
+                +'values (?, ?, ?) ;', [oeuvreId, titre, ordre]
             )
         })
     },
@@ -15,7 +15,7 @@ const chapitresModel = {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getAll")}
         return dbConnect.then((db) =>{
             return db.query(
-                'select * from chapitres'
+                'select * from v_chapitres'
             )
         })
     },
@@ -23,7 +23,7 @@ const chapitresModel = {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+chapitreId)}
         return dbConnect.then((db) =>{
             return db.query(
-                'select * from chapitres '
+                'select * from v_chapitres '
                 +'where chapitre_id=?', [chapitreId]
             )
         })
@@ -34,14 +34,14 @@ const chapitresModel = {
             return db.query(
                 'update chapitres set '
                 +'oeuvre_id=?, '
-                +'ordre=?, '
-                +'titre=?, '
-                +'resume=?, '
                 +'narrateur_id=?, '
-                +'chronologie_debut=?, '
-                +'chronologie_fin=? '
+                +'titre=?, '
+                +'description=?, '
+                +'ordre=?, '
+                +'date_naine_debut=?, '
+                +'date_naine_fin=? '
                 +'where chapitre_id=?'
-                , [oeuvreId, ordre, titre, resume, narrateurId, chronoDebut, chronoFin, chapitreId]
+                , [oeuvreId, narrateurId, titre, resume, ordre, chronoDebut, chronoFin, chapitreId]
             )
         })
     },

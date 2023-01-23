@@ -37,7 +37,7 @@ const chapitresController = {
             if(one[0]){
                 let new_oeuvre_id = req.body.oeuvre_id ?? one[0].oeuvre_id;
                 let new_ordre = req.body.ordre ?? one[0].ordre;
-                let new_titre = req.titre ?? one[0].titre;
+                let new_titre = req.body.titre ?? one[0].titre;
                 let new_resume = req.body.resume ?? one[0].resume;
                 let new_narrateur_id = req.body.narrateur_id ?? one[0].narrateur_id;
                 let new_chronologie_debut = req.body.chronologie_debut ?? one[0].chronologie_debut;
