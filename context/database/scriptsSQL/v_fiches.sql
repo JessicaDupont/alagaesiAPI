@@ -5,6 +5,7 @@ CREATE VIEW `v_fiches`  AS SELECT
 `tf`.`description` AS `type_fiche_description`, 
 `f`.`nom` AS `nom`, 
 `f`.`description` AS `description`, 
+`f`.`date_naine` AS `date_naine`, 
 `f`.`date_debut` AS `date_debut`, 
 `f`.`date_fin` AS `date_fin`, 
 count(`fc`.`fiche_id`) AS `nb_chapitres`, 
@@ -20,4 +21,4 @@ left join `fiches_chapitres` `fc` on `fc`.`fiche_id` = `f`.`fiche_id`
 left join `fiches_fiches` `ff1` on `ff1`.`fiche_id_1` = `f`.`fiche_id` 
 left join `fiches_fiches` `ff2` on `ff1`.`fiche_id_2` = `f`.`fiche_id`
 left join `fiches_informations` `fi` on `fi`.`fiche_id` = `f`.`fiche_id`
-GROUP BY `f`.`fiche_id``fiche_id`  ;
+GROUP BY `f`.`fiche_id`  ;

@@ -9,8 +9,8 @@ let nomControler = "personnesController"
 const personnesController = {
     create : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".create")}
-        let {prenoms, nom} = req.body;
-        personnesModel.create(prenoms, nom)
+        let {prenom, nom} = req.body;
+        personnesModel.create(prenom, nom)
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },
@@ -38,22 +38,22 @@ const personnesController = {
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
     },
-    update : (req, res) => {
-        if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
-        let {prenoms, nom} = req.body;
-        let id = req.params.id;
-        if(id && prenoms && nom){
-            personnesModel.getOne(id)
-            .then((one) =>{
-                if(one[0]){
-                    personnesModel.update(id, prenoms, nom)
-                    .then((data)=>{res.status(200).json({message : validateUpdate})})
-                    .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
-                }else{res.status(500).json({message : errorNotExist})}
-            })
-            .catch((error)=>{res.status(500).json({message : error.sqlMessage})})
-        }
-    },
+    // update : (req, res) => {
+    //     if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
+    //     let {prenoms, nom} = req.body;
+    //     let id = req.params.id;
+    //     if(id && prenoms && nom){
+    //         personnesModel.getOne(id)
+    //         .then((one) =>{
+    //             if(one[0]){
+    //                 personnesModel.update(id, prenoms, nom)
+    //                 .then((data)=>{res.status(200).json({message : validateUpdate})})
+    //                 .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
+    //             }else{res.status(500).json({message : errorNotExist})}
+    //         })
+    //         .catch((error)=>{res.status(500).json({message : error.sqlMessage})})
+    //     }
+    // },
     merge : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".update")}
         let id = req.params.id;
@@ -61,9 +61,11 @@ const personnesController = {
             personnesModel.getOne(id)
             .then((one) =>{
                 if(one[0]){
-                    let new_prenoms = req.body.prenoms ?? one[0].prenoms;
+                    let new_prenom = req.body.prenom ?? one[0].prenom;
                     let new_nom = req.body.nom ?? one[0].nom;
-                    personnesModel.update(id, new_prenoms, new_nom)
+                    let new_dateDN = req.body.date_de_naissance ?? one[0].date_de_naissance;
+                    let new_lieuDN = req.body.lieu_de_naissance ?? one[0].lieu_de_naissance;
+                    personnesModel.update(id, new_prenom, new_nom, new_dateDN, new_lieuDN)
                     .then((data)=>{res.status(200).json({message : validateUpdate})})
                     .catch((error)=>{res.status(404).json({message : error.sqlMessage})})
                 }else{res.status(500).json({message : errorNotExist})}

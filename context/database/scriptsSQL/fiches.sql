@@ -4,6 +4,7 @@ CREATE TABLE fiches (
   FOREIGN key (type_fiche_id) references types_fiches (type_fiche_id),
   nom varchar(50) NOT NULL,
   description text NOT NULL,
+  date_naine bit(1) default 1,
   date_debut date DEFAULT NULL,
   date_fin date DEFAULT NULL
 );

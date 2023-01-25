@@ -267,7 +267,23 @@
         }
     },
     "/api/v1/citations" : {
-        "post" : {"tags" : ["Citations"]},
+        "post" : {
+            "tags" : ["Citations"],
+            "summary" : "Ajout d'une citation",
+            "parameters" : [{
+                "name" : "nouvelle citation",
+                "in" : "body",
+                "required" : true,
+                "description" : "informations pour la création d'une citation",
+                "schema": {"$ref": "#/definitions/citation_new"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation"}
+                }
+            }
+        },
         "get" : {
             "tags" : ["Citations"],
             "summary" : "Liste de toutes les citations",
@@ -297,8 +313,48 @@
                 }
             }
         },
-        "patch" : {"tags" : ["Citations"]},
-        "delete" : {"tags" : ["Citations"]}
+        "patch" : {
+            "tags" : ["Citations"],
+            "summary" : "modification d'une citation",
+            "parameters" : [
+                {
+                    "name" : "id",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "id de la citation",
+                    "default" : "1"
+                },{
+                    "name" : "citation_up",
+                    "in" : "body",
+                    "required" : true,
+                    "description" : "infos d'une citation",
+                    "schema": {"$ref" : "#/definitions/citation"}
+                }
+            ],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation"}
+                }
+            }
+        },
+        "delete" : {
+            "tags" : ["Citations"],
+            "summary" : "suppression d'une citation",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la citation",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/citation"}
+                }
+            }
+        }
     },
     "/api/v1/citations/oeuvre/{id}" : {
         "get" : {
@@ -339,8 +395,33 @@
         }
     },
     "/api/v1/fiches" : {
-        "post" : {"tags" : ["Fiches"]},
-        "get" : {"tags" : ["Fiches"]}
+        "post" : {
+            "tags" : ["Fiches"],
+            "summary" : "Ajout d'une fiche",
+            "parameters" : [{
+                "name" : "nouvelle fiche",
+                "in" : "body",
+                "required" : true,
+                "description" : "informations pour la création d'une fiche",
+                "schema": {"$ref": "#/definitions/fiche_new"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/fiche"}
+                }
+            }
+        },
+        "get" : {
+            "tags" : ["Fiches"],
+            "summary" : "Liste de toutes les fiches",
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/fiche_vue"}
+                }
+            }
+        }
     },
     "/api/v1/fiches/{id}" : {
         "get" : {
@@ -360,11 +441,98 @@
                 }
             }
         },
-        "patch" : {"tags" : ["Fiches"]},
-        "delete" : {"tags" : ["Fiches"]}
+        "patch" : {
+            "tags" : ["Fiches"],
+            "summary" : "modification d'une fiche",
+            "parameters" : [
+                {
+                    "name" : "id",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "id de la fiche",
+                    "default" : "1"
+                },{
+                    "name" : "fiche_up",
+                    "in" : "body",
+                    "required" : true,
+                    "description" : "infos d'une fiche",
+                    "schema": {"$ref" : "#/definitions/fiche"}
+                }
+            ],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/fiche"}
+                }
+            }
+        },
+        "delete" : {
+            "tags" : ["Fiches"],
+            "summary" : "suppression d'une fiche",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la fiche",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/fiche"}
+                }
+            }
+        }
+    },
+    "/api/v1/fiches/types" : {
+        "get" : {
+            "tags" : ["Fiches"],
+            "summary" : "tous les types de fiches",
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/type_fiche"}
+                }
+            }
+        }
+    },
+    "/api/v1/fiches/type/{id}" : {
+        "get" : {
+            "tags" : ["Fiches"],
+            "summary" : "toutes les fiches par type",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id du type de fiche",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/fiche_vue"}
+                }
+            }
+        }
     },
     "/api/v1/personnes" : {
-        "post" : {"tags" : ["Personnes"]},
+        "post" : {
+            "tags" : ["Personnes"],
+            "summary" : "Ajout d'une personne",
+            "parameters" : [{
+                "name" : "nouvelle personne",
+                "in" : "body",
+                "required" : true,
+                "description" : "informations pour la création d'une personne",
+                "schema": {"$ref": "#/definitions/personne_new"}
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/personne"}
+                }
+            }
+        },
         "get" : {
             "tags" : ["Personnes"],
             "summary" : "Liste de toutes les personnes",
@@ -394,12 +562,67 @@
                 }
             }
         },
-        "put" : {"tags" : ["Personnes"]},
-        "patch" : {"tags" : ["Personnes"]},
-        "delete" : {"tags" : ["Personnes"]}
+        "patch" : {
+            "tags" : ["Personnes"],
+            "summary" : "modification d'une personne",
+            "parameters" : [
+                {
+                    "name" : "id",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "id de la personne",
+                    "default" : "1"
+                },{
+                    "name" : "personne_up",
+                    "in" : "body",
+                    "required" : true,
+                    "description" : "infos d'une personne",
+                    "schema": {"$ref" : "#/definitions/personne"}
+                }
+            ],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/personne"}
+                }
+            }
+        },
+        "delete" : {
+            "tags" : ["Personnes"],
+            "summary" : "suppression d'une personne",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de la personne",
+                "default" : "1"
+            }],
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": {"$ref" : "#/definitions/personne"}
+                }
+            }
+        }
     },
     "/api/v1/personnes/oeuvre/{id}" : {
-        "get" : {"tags" : ["Personnes"]}
+        "get" : {
+            "tags" : ["Personnes"],
+            "summary" : "Liste de toutes les personnes ayant participé à l'oeuvre",
+            "parameters" : [{
+                "name" : "id",
+                "in" : "path",
+                "required" : true,
+                "description" : "id de l'oeuvre",
+                "default" : "1"
+            }],
+            "responses" : {
+                "200" : {
+                    "description" : "OK",
+                    "schema" : {"$ref" : "#/definitions/personne_vue"}
+                }
+            }
+        }
     }
   },
 
@@ -459,6 +682,14 @@
             "nb_personnes" : {"type" : "integer"}
         }
     },
+    "chapitre_new" : {
+        "required" : ["oeuvre_id", "titre", "ordre"],
+        "properties" : {
+            "oeuvre_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "ordre" : {"type" : "integer"}
+        }
+    },
     "chapitre" : {
         "required" : ["chapitre_id", "oeuvre_id", "titre", "ordre"],
         "properties" : {
@@ -470,14 +701,6 @@
             "ordre" : {"type" : "integer"},
             "date_naine_debut" : {"type" : "string"},
             "date_naine_fin" : {"type" : "string"}
-        }
-    },
-    "chapitre_new" : {
-        "required" : ["oeuvre_id", "titre", "ordre"],
-        "properties" : {
-            "oeuvre_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
-            "ordre" : {"type" : "integer"}
         }
     },
     "chapitre_vue" : {
@@ -496,50 +719,110 @@
             "nb_fiches" : {"type" : "integer"}
         }
     },
+    "citation_new" : {
+        "required" : ["titre", "description"],
+        "properties" : {
+            "titre" : {"type" : "string"},
+            "description" : {"type" : "string"}
+        }
+    },
     "citation" : {
+        "required" : ["citation_id", "titre", "description"],
         "properties" : {
             "citation_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
             "chapitre_id" : {"type" : "integer"},
-            "texte" : {"type" : "string"},
             "auteur_id" : {"type" : "integer"},
+            "titre" : {"type" : "string"},
+            "description" : {"type" : "string"},
             "ordre" : {"type" : "integer"},
-            "chronologie" : {"type" : "string"}
+            "date_naine" : {"type" : "string"}
         }
     },
     "citation_vue" : {
         "properties" : {
             "citation_id" : {"type" : "integer"},
-            "ordre" : {"type" : "integer"},
             "chapitre_id" : {"type" : "integer"},
             "chapitre_titre" : {"type" : "string"},
-            "titre" : {"type" : "string"},
-            "texte" : {"type" : "string"},
-            "chronologie" : {"type" : "string"},
             "auteur_id" : {"type" : "integer"},
-            "auteur_nom" : {"type" : "string"}
+            "auteur_nom" : {"type" : "string"},
+            "titre" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "ordre" : {"type" : "integer"},
+            "date_naine" : {"type" : "string"}
+        }
+    },
+    "personne_new" : {
+        "required" : ["nom"],
+        "properties" : {
+            "prenom" : {"type" : "string"},
+            "nom" : {"type" : "string"}
         }
     },
     "personne" : {
+        "required" : ["personne_id", "nom"],
         "properties" : {
             "personne_id" : {"type" : "integer"},
-            "prenoms" : {"type" : "string"},
-            "nom" : {"type" : "string"}
+            "prenom" : {"type" : "string"},
+            "nom" : {"type" : "string"},
+            "date_de_naissance" : {"type" : "string"},
+            "lieu_de_naissance" : {"type" : "string"}
         }
     },
     "personne_vue" : {
         "properties" : {
             "personne_id" : {"type" : "integer"},
-            "prenoms" : {"type" : "string"},
+            "prenom" : {"type" : "string"},
             "nom" : {"type" : "string"},
             "nom_complet" : {"type" : "string"},
-            "nb_contributions" : {"type" : "integer"}
+            "date_de_naissance" : {"type" : "string"},
+            "lieu_de_naissance" : {"type" : "string"},
+            "nb_oeuvres_contribution" : {"type" : "integer"}
+        }
+    },
+    "fiche_new" : {
+        "required" : ["type_fiche_id", "nom", "description"],
+        "properties" : {
+            "type_fiche_id" : {"type" : "integer"},
+            "nom" : {"type" : "string"},
+            "description" : {"type" : "string"}
+        }
+    },
+    "fiche" : {
+        "required" : ["fiche_id", "type_fiche_id", "nom", "description"],
+        "properties" : {
+            "fiche_id" : {"type" : "integer"},
+            "type_fiche_id" : {"type" : "integer"},
+            "nom" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "date_naine" : {"type" : "boolean"},
+            "date_debut" : {"type" : "string"},
+            "date_fin" : {"type" : "string"}
         }
     },
     "fiche_vue" : {
         "properties" : {
             "fiche_id" : {"type" : "integer"},
-            "nom" : {"type" : "string"}
+            "type_fiche_id" : {"type" : "integer"},
+            "type_fiche_nom" : {"type" : "string"},
+            "type_fiche_description" : {"type" : "string"},
+            "nom" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "date_naine" : {"type" : "boolean"},
+            "date_debut" : {"type" : "string"},
+            "date_fin" : {"type" : "string"},
+            "nb_chapitres" : {"type" : "integer"},
+            "nb_chapitres_narrateur" : {"type" : "integer"},
+            "nb_citations_auteur" : {"type" : "integer"},
+            "nb_fiches" : {"type" : "integer"},
+            "nb_informations" : {"type" : "integer"}
+        }
+    },
+    "type_fiche" : {
+        "properties" : {
+            "type_fiche_id" : {"type" : "integer"},
+            "nom" : {"type" : "string"},
+            "description" : {"type" : "string"},
+            "type_fiche_parent_id" : {"type" : "integer"}
         }
     }
   }

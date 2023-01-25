@@ -7,7 +7,7 @@ const personnesRouter = express.Router();
 personnesRouter.post('/', personnesController.create)
 personnesRouter.get('/', personnesController.getAll)
 personnesRouter.get('/:id([0-9]+)', personnesController.getOne)//.../api/v1/personnes/3
-personnesRouter.put('/:id([0-9]+)', personnesController.update)
+// personnesRouter.put('/:id([0-9]+)', personnesController.update)
 personnesRouter.patch('/:id([0-9]+)', personnesController.merge)
 personnesRouter.delete('/:id([0-9]+)', personnesController.delete)
 

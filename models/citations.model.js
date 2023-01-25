@@ -6,7 +6,7 @@ const citationsModel = {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+titre+"-"+texte)}
         return dbConnect.then((db) => {
             return db.query(
-                'insert into citations (titre, texte) '
+                'insert into citations (titre, description) '
                 +'values (?, ?)', [titre, texte]
             )
         })
@@ -57,10 +57,10 @@ const citationsModel = {
                 'update citations set '
                 +'titre=?, '
                 +'chapitre_id=?, '
-                +'texte=?, '
+                +'description=?, '
                 +'auteur_id=?, '
                 +'ordre=?, '
-                +'chronologie=? '
+                +'date_naine=? '
                 +'where citation_id=? '
                 , [titre, chapitreId, texte, auteurId, ordre, chronologie, citationId]
             )

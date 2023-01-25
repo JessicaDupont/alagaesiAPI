@@ -2,12 +2,12 @@ const dbConnect = require("../context/database/connect2db").get();
 let nomModel = "fichesModel";
 
 const fichesModel = {
-    create : (nom, catId) => {
+    create : (catId, nom, description) => {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+nom+"-"+catId)}
         return dbConnect.then((db) =>{
             return db.query(
-                'insert into fiches (nom, categorie_id) '
-                +'values (?, ?)', [nom, catId])
+                'insert into fiches (type_fiche_id, nom, description) '
+                +'values (?, ?, ?)', [catId, nom, description])
         })
     },
     getAll : () =>{
@@ -16,6 +16,15 @@ const fichesModel = {
             return db.query(
                 'select * '
                 +'from v_fiches ')
+        })
+    },
+    getAllByType : (typeFicheId) =>{
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByType")}
+        return dbConnect.then((db) =>{
+            return db.query(
+                'select * '
+                +'from v_fiches '
+                +'where type_fiche_id=? ', [typeFicheId])
         })
     },
     getOne : (id) =>{
@@ -27,18 +36,19 @@ const fichesModel = {
                 +'where fiche_id=?', [id])
         })
     },
-    update : (id, nom, catId, chronoDebut, chronoFin, description) =>{
+    update : (id, type_fiche_id, nom, description, date_naine, date_debut, date_fin) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".update/"+id+"/"+nom)}
         return dbConnect.then((db) =>{
             return db.query(
                 'update fiches set '
+                +'type_fiche_id=?, '
                 +'nom=?, '
-                +'categorie_id=?, '
-                +'chronologie_debut=?, '
-                +'chronologie_fin=?, '
                 +'description=?, '
+                +'date_naine=?, '
+                +'date_debut=?, '
+                +'date_fin=? '
                 +'where fiche_id=?', 
-                [nom, catId, chronoDebut, chronoFin, description, id])
+                [type_fiche_id, nom, description, date_naine, date_debut, date_fin, id])
         })
     },
     delete : (id) =>{

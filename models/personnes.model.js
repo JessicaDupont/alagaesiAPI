@@ -5,7 +5,7 @@ const personnesModel = {
     create : (prenoms, nom) => {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+prenoms+"/"+nom)}
         return dbConnect.then((db) =>{
-            return db.query('insert into personnes (prenoms, nom) '
+            return db.query('insert into personnes (prenom, nom) '
             +'values (?, ?)', [prenoms, nom])
         })
     },
@@ -24,12 +24,12 @@ const personnesModel = {
             +'where personne_id=?', [id])
         })
     },
-    update : (id, prenoms, nom) =>{
+    update : (id, prenoms, nom, dateDN, lieuDN) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".update/"+id+"/"+prenoms+"/"+nom)}
         return dbConnect.then((db) =>{
             return db.query('update personnes '
-            +'set prenoms=?, nom=? '
-            +'where personne_id=?', [prenoms, nom, id])
+            +'set prenom=?, nom=?, date_de_naissance=?, lieu_de_naissance=?'
+            +'where personne_id=?', [prenoms, nom, dateDN, lieuDN, id])
         })
     },
     delete : (id) =>{

@@ -10,4 +10,7 @@ fichesRouter.get('/:id([0-9]+)', fichesController.getOne)
 fichesRouter.patch('/:id([0-9]+)', fichesController.merge)
 fichesRouter.delete('/:id([0-9]+)', fichesController.delete)
 
+fichesRouter.get('/types', fichesController.getAllTypes)
+fichesRouter.get('/type/:id([0-9]+)', fichesController.getAllByTypes)
+
 module.exports = fichesRouter;
