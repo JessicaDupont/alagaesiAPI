@@ -40,6 +40,16 @@ const citationsModel = {
             )
         })
     },
+    getAllByAuteur : (ficheId) => {
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByAuteur")}
+        return dbConnect.then((db) => {
+            return db.query(
+                'select * '
+                +'from citations '
+                +'where auteur_id=?', [ficheId]
+            )
+        })
+    },
     getOne : (citationId) => {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+citationId)}
         return dbConnect.then((db) => {

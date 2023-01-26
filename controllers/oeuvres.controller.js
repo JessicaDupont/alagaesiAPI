@@ -1,4 +1,5 @@
 const oeuvresModel = require("../models/oeuvres.model");
+const chapitresModel = require("../models/chapitres.model");
 const personnesModel = require("../models/personnes.model")
 const typesOeuvresModel = require("../models/types_oeuvres.model")
 const personnesOeuvresModel = require("../models/personnes_oeuvres.model")
@@ -28,10 +29,17 @@ const oeuvresController = {
         oeuvresModel.getOne(id)
         .then((one) => {
             if(one[0]) {
+                //liste des personnes
                 personnesOeuvresModel.getByOeuvre(one[0].oeuvre_id)
                 .then((pers)=>{
                     one[0].personnes = pers;
-                    res.status(200).json(one)
+                    //liste des chapitres
+                    chapitresModel.getAllByOeuvre(one[0].oeuvre_id)
+                    .then((chap)=>{
+                        one[0].chapitres = chap;
+                        res.status(200).json(one)
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
                 })
                 .catch((error)=>{
                     one[0].personnes = "";

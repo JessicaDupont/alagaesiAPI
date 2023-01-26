@@ -5,7 +5,9 @@ CREATE VIEW `v_personnes`  AS SELECT
 concat_ws(' ',`p`.`prenom`,`p`.`nom`) AS `nom_complet`, 
 `p`.`date_de_naissance` AS `date_de_naissance`, 
 `p`.`lieu_de_naissance` AS `lieu_de_naissance`, 
-count(`po`.`personne_id`) AS `nb_oeuvres` 
+count(`po`.`personne_id`) AS `nb_oeuvres`, 
+count(`po`.`fiche_id`) AS `nb_fiches` 
 FROM `personnes` `p` 
-left join `personnes_oeuvres` `po` on `po`.`personne_id` = `p`.`personne_id`
+left join `personnes_oeuvres` `po` on `po`.`personne_id` = `p`.`personne_id` 
+left join fiches_personnes fp on fp.personne_id = p.personne_id 
 GROUP BY `p`.`personne_id``personne_id`  ;

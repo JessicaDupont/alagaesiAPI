@@ -19,6 +19,27 @@ const chapitresModel = {
             )
         })
     },
+    getAllByOeuvre : (oeuvreID) => {
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByOeuvre")}
+        return dbConnect.then((db) =>{
+            return db.query(
+                'select * '
+                +'from v_chapitres '
+                +'where oeuvre_id=? ', [oeuvreID]
+            )
+        })
+    },
+    getAllByFiche : (ficheID) => {
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByFiche")}
+        return dbConnect.then((db) =>{
+            return db.query(
+                'select * '
+                +'from v_chapitres c '
+                +'left join fiches_chapitres fc on fc.chapitre_id = c.chapitre_id '
+                +'where fc.fiche_id=? ', [ficheID]
+            )
+        })
+    },
     getOne : (chapitreId) => {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+chapitreId)}
         return dbConnect.then((db) =>{

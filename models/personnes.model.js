@@ -13,14 +13,14 @@ const personnesModel = {
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getAll")}
         return dbConnect.then((db) =>{
             return db.query('select * '
-            +'from personnes')
+            +'from v_personnes')
         })
     },
     getOne : (id) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+id)}
         return dbConnect.then((db) =>{
             return db.query('select * '
-            +'from personnes '
+            +'from v_personnes '
             +'where personne_id=?', [id])
         })
     },

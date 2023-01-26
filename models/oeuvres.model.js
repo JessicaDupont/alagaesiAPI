@@ -19,6 +19,32 @@ const oeuvresModel = {
                 +'order by date_creation')
         })
     },
+    getAllByPersonne : (personneId) =>{
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByPersonne")}
+        return dbConnect.then((db) =>{
+            return db.query(
+                'select * '
+                +'from oeuvres o '
+                +'join personnes_oeuvres po on po.oeuvre_id = o.oeuvre_id '
+                +'where po.personne_id=? ', [personneId])
+        })
+    },
+    getAllByFiche : (ficheId) =>{
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".getAllByFiche")}
+        return dbConnect.then((db) =>{
+            return db.query(
+                'select o.oeuvre_id, '
+                    +'o.oeuvre_precedente_id, o.oeuvre_precedente_titre, '
+                    +'o.createur_id, o.createur_prenom, o.createur_nom, '
+                    +'o.type_oeuvre_id, o.type_oeuvre_nom, o.type_oeuvre_description, '
+                    +'o.titre, o.date_creation, o.image_url, o.resume, '
+                    +'o.nb_chapitres, o.nb_personnes '
+                +'from v_oeuvres o '
+                +'left join v_chapitres c on c.oeuvre_id = o.oeuvre_id '
+                +'left join fiches_chapitres fc on fc.chapitre_id = c.chapitre_id '
+                +'where fc.fiche_id = ? ', [ficheId])
+        })
+    },
     getOne : (id) =>{
         if(process.env.CONSOLE_LOG){console.log(nomModel+".getOne/"+id)}
         return dbConnect.then((db) =>{

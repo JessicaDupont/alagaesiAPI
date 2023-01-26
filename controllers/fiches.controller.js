@@ -1,5 +1,9 @@
 const fichesModel = require("../models/fiches.model");
 const typeFichesModel = require("../models/types_fiches.model");
+const oeuvresModel = require("../models/oeuvres.model");
+const chapitresModel = require("../models/chapitres.model");
+const citationsModel = require("../models/citations.model");
+const fichesInformationsModel = require("../models/fiches_informations.model");
 
 let errorNotExist = "Cette fiche n'existe pas."
 let validateUpdate = "La fiche a bien été modifiée."
@@ -25,7 +29,65 @@ const fichesController = {
         let id = req.params.id;
         fichesModel.getOne(id)
         .then((one) => {
-            if(one[0]) {res.status(200).json(one)}
+            if(one[0]) {
+                //liste des oeuvres
+                oeuvresModel.getAllByFiche(one[0].fiche_id)
+                .then((oeu)=>{
+                    one[0].oeuvres = oeu;
+                    //liste des chapitres
+                    chapitresModel.getAllByFiche(one[0].fiche_id)
+                    .then((chap)=>{
+                        one[0].chapitres = chap;
+                        //liste des citations
+                        citationsModel.getAllByAuteur(one[0].fiche_id)
+                        .then((cit)=>{
+                            one[0].citations = cit;
+                            //liste des fiches
+                            fichesModel.getAllByFiche(one[0].fiche_id)
+                            .then((fich)=>{
+                                one[0].fiches = fich;
+                                //liste des informations
+                                fichesInformationsModel.getAllByFiche(one[0].fiche_id)
+                                .then((info)=>{
+                                    one[0].informations = info;
+                                    res.status(200).json(one)
+                                })
+                                .catch((error)=>{res.status(200).json(one)})
+                            })
+                            .catch((error)=>{res.status(200).json(one)})
+                        })
+                        .catch((error)=>{res.status(200).json(one)})
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
+                })
+                .catch((error)=>{
+                    //liste des chapitres
+                    // chapitresModel.getAllByFiche(one[0].fiche_id)
+                    // .then((chap)=>{
+                    //     one[0].chapitres = chap;
+                    //     //liste des citations
+                    //     citationsModel.getAllByAuteur(one[0].fiche_id)
+                    //     .then((cit)=>{
+                    //         one[0].citations = cit;
+                    //         //liste des fiches
+                    //         fichesModel.getAllByFiche(one[0].fiche_id)
+                    //         .then((fich)=>{
+                    //             one[0].fiches = fich;
+                    //             //liste des informations
+                    //             fichesInformationsModel.getAllByFiche(one[0].fiche_id)
+                    //             .then((info)=>{
+                    //                 one[0].informations = info;
+                                    res.status(200).json(one)
+                    //             })
+                    //             .catch((error)=>{res.status(200).json(one)})
+                    //         })
+                    //         .catch((error)=>{res.status(200).json(one)})
+                    //     })
+                    //     .catch((error)=>{res.status(200).json(one)})
+                    // })
+                    // .catch((error)=>{res.status(200).json(one)})
+                })
+            }
             else {res.status(404).json({message : errorNotExist})}
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})

@@ -776,7 +776,8 @@
             "nom_complet" : {"type" : "string"},
             "date_de_naissance" : {"type" : "string"},
             "lieu_de_naissance" : {"type" : "string"},
-            "nb_oeuvres_contribution" : {"type" : "integer"}
+            "nb_oeuvres_contribution" : {"type" : "integer"},
+            "nb_fiches" : {"type" : "integer"}
         }
     },
     "fiche_new" : {

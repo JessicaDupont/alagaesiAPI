@@ -1,5 +1,7 @@
 const personnesModel = require("../models/personnes.model");
 const personnesOeuvresModel = require("../models/personnes_oeuvres.model");
+const oeuvresModel = require("../models/oeuvres.model");
+const fichesModel = require("../models/fiches.model");
 
 let errorNotExist = "Cette personne n'existe pas."
 let validateUpdate = "La personne a bien été modifiée."
@@ -33,7 +35,29 @@ const personnesController = {
         let id = req.params.id;
         personnesModel.getOne(id)
         .then((one) => {
-            if(one[0]) {res.status(200).json(one)}
+            if(one[0]) {
+                //liste des oeuvres
+                oeuvresModel.getAllByPersonne(one[0].personne_id)
+                .then((data) => {
+                    one[0].oeuvres = data;
+                    //liste des fiches
+                    fichesModel.getAllByPersonne(one[0].personne_id)
+                    .then((fi)=>{
+                        one[0].fiches = fi;
+                        res.status(200).json(one)
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
+                })
+                .catch((error)=>{
+                    //liste des fiches
+                    fichesModel.getAllByPersonne(one[0].personne_id)
+                    .then((fi)=>{
+                        one[0].fiches = fi;
+                        res.status(200).json(one)
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
+                })
+            }
             else {res.status(404).json({message : errorNotExist})}
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})

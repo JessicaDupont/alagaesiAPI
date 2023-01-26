@@ -1,4 +1,6 @@
 const chapitresModel = require("../models/chapitres.model")
+const fichesModel = require("../models/fiches.model")
+const citationsModel = require("../models/citations.model")
 
 let errorNotExist = "Ce chapitre n'existe pas."
 let validateUpdate = "Le chapitre a bien été modifié."
@@ -24,7 +26,33 @@ const chapitresController = {
         let id = req.params.id;
         chapitresModel.getOne(id)
         .then((one) => {
-            if(one[0]) {res.status(200).json(one)}
+            if(one[0]) {
+                console.log("chapitre trouvé")
+                //liste des fiches
+                fichesModel.getAllByChapitre(one[0].chapitre_id)
+                .then((fiches)=>{
+                    console.log("fiches trouvé")
+                    one[0].fiches = fiches;
+                    //liste des citations
+                    citationsModel.getAllByChapitre(one[0].chapitre_id)
+                    .then((cit)=>{
+                        console.log("citations trouvé")
+                        one[0].citations = cit;
+                        res.status(200).json(one)
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
+                })
+                .catch((error)=>{
+                    //liste des citations
+                    citationsModel.getAllByChapitre(one[0].chapitre_id)
+                    .then((cit)=>{
+                        console.log("citations trouvé")
+                        one[0].citations = cit;
+                        res.status(200).json(one)
+                    })
+                    .catch((error)=>{res.status(200).json(one)})
+                })
+            }
             else {res.status(404).json({message : errorNotExist})}
         })
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})
