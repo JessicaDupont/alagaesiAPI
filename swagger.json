@@ -1,48 +1,103 @@
 { 
-  "swagger": "2.0", 
-  "info": { 
-    "version": "1.0.0",
-    "title": "AlagaesiAPI", 
-    "description": "Informations venues d'Alagaësia"
-  }, 
-  "consume": ["application/json"], 
-  "produit": ["application/json"],
+    "swagger": "2.0", 
+    "info": { 
+        "description": "Informations en français venues d'Alagaësia",
+        "version" : "1.0.0",
+        "title": "AlagaësiAPI", 
+        "contact" : {
+            "name": "Jessica Dupont",
+            "email": "jessica.dupont1990@gmail.com",
+            "url": "http://www.jessicadupont.be"
+        }
+    }, 
+    "host" : "https://alagaesiapi.ica.plus",
+    "basePath" : "/api/v1",
 
-  "tags": [ 
-    { 
-      "name": "Oeuvres", 
-      "description": "Informations sur les oeuvres liés à l'univers d'Alagaësia."
+    "tags": [ 
+        { 
+            "name": "Clients", 
+            "description": "Personnes pouvant utiliser l'API"
+        },{ 
+            "name": "Oeuvres", 
+            "description": "Informations sur les oeuvres liés à l'univers d'Alagaësia."
+        },{ 
+            "name": "Chapitres", 
+            "description": "Chapitres ou portions liées aux oeuvres."
+        },{ 
+            "name": "Citations", 
+            "description": "Citations liées, ou non, à un chapitre."
+        },{ 
+            "name": "Personnes", 
+            "description": "Personnes réelles ayant rejoint l'univers d'Alagaësia."
+        },{ 
+            "name": "Fiches", 
+            "description": "Informations détaillées sur le monde d'Alagaësia."
+        }
+    ],
+    "schemes" : ["http", "https"],
+    
+    
+    "paths": {
+    "clients" : {
+        "post" : {
+            "tags": ["Clients"],
+            "summary": "création d'un compte client",
+            "operationId": "addClient",
+            "parameters": [{
+                "in": "body",
+                "name": "body",
+                "description": "nouveau client",
+                "required": true,
+                "schema" : { "$ref" : "#/definitions/client"}
+            }],
+            "responses": {
+                "201" : {
+                    "description": "client créé",
+                    "schema": { "$ref": "#/definitions/AuthCreated" }
+                },
+                "500" : {
+                    "description": "impossible de créer le client"
+                }
+            },
+            "security": {
+                "alagaesiapi_auth": []
+            }
+        }
     },
-    { 
-      "name": "Chapitres", 
-      "description": "Chapitres ou portions liées aux oeuvres."
+    "/api/v1/auth/{email}" : {
+        "get" : {
+            "tags": ["Auth"],
+            "summary": "Authentification",
+            "responses": {
+                "200" : {
+                    "description": "OK",
+                    "schema": { "$ref": "#/definitions/AuthentificationOk" }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "description": "Email to authenticate users for get access token",
+                    "schema" : { "$ref" : "#/definitions/Email"},
+                    "default" : "string"
+                }
+            ]
+        }
     },
-    { 
-      "name": "Citations", 
-      "description": "Citations liées, ou non, à un chapitre."
-    },
-    { 
-      "name": "Personnes", 
-      "description": "Personnes réelles ayant rejoint l'univers d'Alagaësia."
-    },
-    { 
-      "name": "Fiches", 
-      "description": "Informations détaillées sur le monde d'Alagaësia."
-    }
-  ],
-
-  "paths": {
     "/api/v1/oeuvres" : {
         "post" : {
             "tags" : ["Oeuvres"],
             "summary" : "Ajout d'une oeuvre",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "nouvelle oeuvre",
                 "in" : "body",
                 "required" : true,
                 "description" : "informations pour la création d'une oeuvre",
                 "schema": {"$ref": "#/definitions/oeuvre_new"}
-            }],
+                }],
             "responses": {
                 "200" : {
                     "description": "OK",
@@ -53,6 +108,7 @@
         "get" : {
             "tags" : ["Oeuvres"],
             "summary" : "Liste de toutes les oeuvres.",
+            "security" : {"bearerAuth": []},
             "responses" : {
                 "200" : {
                     "description" : "OK",
@@ -71,17 +127,18 @@
                 "required" : true,
                 "description" : "id de l'oeuvre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/oeuvre_vue"}
-                }
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
+                        "schema": {"$ref" : "#/definitions/oeuvre_vue"}
+                    }
             }
         },
         "patch" : {
             "tags" : ["Oeuvres"],
             "summary" : "modification d'une oeuvre",
+            "security" : {"Bearer": []},
             "parameters" : [
                 {
                     "name" : "id",
@@ -89,8 +146,8 @@
                     "required" : true,
                     "description" : "id de l'oeuvre",
                     "default" : "1"
-                },{
-                    "name" : "oeuvre_up",
+                    },{
+                        "name" : "oeuvre_up",
                     "in" : "body",
                     "required" : true,
                     "description" : "infos d'une oeuvre",
@@ -107,15 +164,16 @@
         "delete" : {
             "tags" : ["Oeuvres"],
             "summary" : "suppression d'une oeuvre",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id de l'oeuvre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/oeuvre"}
                 }
@@ -138,15 +196,16 @@
         "post" : {
             "tags" : ["Oeuvres"],
             "summary" : "Lié une personne à une oeuvre",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id de l'oeuvre",
                 "default" : "1"
-            },{
-                "name" : "nouveau lien",
-                "in" : "body",
+                },{
+                    "name" : "nouveau lien",
+                    "in" : "body",
                 "required" : true,
                 "description" : "permet de lier une personne à une oeuvre",
                 "schema": {"$ref": "#/definitions/personne_oeuvre"}
@@ -167,12 +226,12 @@
                 "required" : true,
                 "description" : "id de la personne",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/oeuvre_vue"}
-                }
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
+                        "schema": {"$ref" : "#/definitions/oeuvre_vue"}
+                    }
             }
         }
     },
@@ -180,18 +239,19 @@
         "post" : {
             "tags" : ["Chapitres"],
             "summary" : "Ajout d'un chapitre",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "nouveau chapitre",
                 "in" : "body",
                 "required" : true,
                 "description" : "informations pour la création d'un chapitre",
                 "schema": {"$ref": "#/definitions/chapitre_new"}
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/chapitre"}
-                }
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
+                        "schema": {"$ref" : "#/definitions/chapitre"}
+                    }
             }
         },
         "get" : {
@@ -215,9 +275,9 @@
                 "required" : true,
                 "description" : "id du chapitre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/chapitre_vue"}
                 }
@@ -226,6 +286,7 @@
         "patch" : {
             "tags" : ["Chapitres"],
             "summary" : "modification d'un chapitre",
+            "security" : {"Bearer": []},
             "parameters" : [
                 {
                     "name" : "id",
@@ -233,9 +294,9 @@
                     "required" : true,
                     "description" : "id du chapitre",
                     "default" : "1"
-                },{
-                    "name" : "chapitre_up",
-                    "in" : "body",
+                    },{
+                        "name" : "chapitre_up",
+                        "in" : "body",
                     "required" : true,
                     "description" : "infos d'un chapitre",
                     "schema": {"$ref" : "#/definitions/chapitre"}
@@ -251,15 +312,16 @@
         "delete" : {
             "tags" : ["Chapitres"],
             "summary" : "suppression d'un chapitre",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id du chapitre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/chapitre"}
                 }
@@ -270,14 +332,15 @@
         "post" : {
             "tags" : ["Citations"],
             "summary" : "Ajout d'une citation",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "nouvelle citation",
                 "in" : "body",
                 "required" : true,
                 "description" : "informations pour la création d'une citation",
                 "schema": {"$ref": "#/definitions/citation_new"}
-            }],
-            "responses": {
+                }],
+                "responses": {
                 "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/citation"}
@@ -305,10 +368,10 @@
                 "required" : true,
                 "description" : "id de la citation",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
                     "schema": {"$ref" : "#/definitions/citation_vue"}
                 }
             }
@@ -316,6 +379,7 @@
         "patch" : {
             "tags" : ["Citations"],
             "summary" : "modification d'une citation",
+            "security" : {"Bearer": []},
             "parameters" : [
                 {
                     "name" : "id",
@@ -323,8 +387,8 @@
                     "required" : true,
                     "description" : "id de la citation",
                     "default" : "1"
-                },{
-                    "name" : "citation_up",
+                    },{
+                        "name" : "citation_up",
                     "in" : "body",
                     "required" : true,
                     "description" : "infos d'une citation",
@@ -341,15 +405,16 @@
         "delete" : {
             "tags" : ["Citations"],
             "summary" : "suppression d'une citation",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id de la citation",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/citation"}
                 }
@@ -366,9 +431,9 @@
                 "required" : true,
                 "description" : "id de l'oeuvre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/citation_vue"}
                 }
@@ -385,9 +450,9 @@
                 "required" : true,
                 "description" : "id du chapitre",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/citation_vue"}
                 }
@@ -398,15 +463,16 @@
         "post" : {
             "tags" : ["Fiches"],
             "summary" : "Ajout d'une fiche",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "nouvelle fiche",
                 "in" : "body",
                 "required" : true,
                 "description" : "informations pour la création d'une fiche",
                 "schema": {"$ref": "#/definitions/fiche_new"}
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/fiche"}
                 }
@@ -433,10 +499,10 @@
                 "required" : true,
                 "description" : "id de la fiche",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
                     "schema": {"$ref" : "#/definitions/fiche_vue"}
                 }
             }
@@ -444,6 +510,7 @@
         "patch" : {
             "tags" : ["Fiches"],
             "summary" : "modification d'une fiche",
+            "security" : {"Bearer": []},
             "parameters" : [
                 {
                     "name" : "id",
@@ -451,8 +518,8 @@
                     "required" : true,
                     "description" : "id de la fiche",
                     "default" : "1"
-                },{
-                    "name" : "fiche_up",
+                    },{
+                        "name" : "fiche_up",
                     "in" : "body",
                     "required" : true,
                     "description" : "infos d'une fiche",
@@ -469,18 +536,19 @@
         "delete" : {
             "tags" : ["Fiches"],
             "summary" : "suppression d'une fiche",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id de la fiche",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/fiche"}
-                }
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
+                        "schema": {"$ref" : "#/definitions/fiche"}
+                    }
             }
         }
     },
@@ -506,7 +574,7 @@
                 "required" : true,
                 "description" : "id du type de fiche",
                 "default" : "1"
-            }],
+                }],
             "responses": {
                 "200" : {
                     "description": "OK",
@@ -519,16 +587,17 @@
         "post" : {
             "tags" : ["Personnes"],
             "summary" : "Ajout d'une personne",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "nouvelle personne",
                 "in" : "body",
                 "required" : true,
                 "description" : "informations pour la création d'une personne",
                 "schema": {"$ref": "#/definitions/personne_new"}
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
+                }],
+                "responses": {
+                    "200" : {
+                        "description": "OK",
                     "schema": {"$ref" : "#/definitions/personne"}
                 }
             }
@@ -554,7 +623,7 @@
                 "required" : true,
                 "description" : "id de la personne",
                 "default" : "1"
-            }],
+                }],
             "responses": {
                 "200" : {
                     "description": "OK",
@@ -565,6 +634,7 @@
         "patch" : {
             "tags" : ["Personnes"],
             "summary" : "modification d'une personne",
+            "security" : {"Bearer": []},
             "parameters" : [
                 {
                     "name" : "id",
@@ -572,8 +642,8 @@
                     "required" : true,
                     "description" : "id de la personne",
                     "default" : "1"
-                },{
-                    "name" : "personne_up",
+                    },{
+                        "name" : "personne_up",
                     "in" : "body",
                     "required" : true,
                     "description" : "infos d'une personne",
@@ -590,15 +660,16 @@
         "delete" : {
             "tags" : ["Personnes"],
             "summary" : "suppression d'une personne",
+            "security" : {"Bearer": []},
             "parameters" : [{
                 "name" : "id",
                 "in" : "path",
                 "required" : true,
                 "description" : "id de la personne",
                 "default" : "1"
-            }],
-            "responses": {
-                "200" : {
+                }],
+                "responses": {
+                    "200" : {
                     "description": "OK",
                     "schema": {"$ref" : "#/definitions/personne"}
                 }
@@ -615,8 +686,8 @@
                 "required" : true,
                 "description" : "id de l'oeuvre",
                 "default" : "1"
-            }],
-            "responses" : {
+                }],
+                "responses" : {
                 "200" : {
                     "description" : "OK",
                     "schema" : {"$ref" : "#/definitions/personne_vue"}
@@ -625,206 +696,262 @@
         }
     }
   },
-
+  
   "definitions": {
-    "type_oeuvre" : {
-        "properties" : {
-            "type_oeuvre_id" : {"type" : "integer"},
-            "nom" : {"type" : "string"}
+        "type_oeuvre" : {
+            "properties" : {
+                "type_oeuvre_id" : {"type" : "integer"},
+                "nom" : {"type" : "string"}
+            }
+        },
+        "personne_oeuvre" : {
+            "required" : ["oeuvre_id", "personne_id"],
+            "properties" : {
+                "oeuvre_id" : {"type" : "integer"},
+                "personne_id" : {"type" : "integer"},
+                "fonction" : {"type" : "string"},
+                "date_fonction" : {"type" : "string"},
+                "description" : {"type" : "string"}
+            }
+        },
+        "oeuvre_new" : {
+            "required" : ["createur_id", "titre"],
+            "properties" : {
+                "createur_id" : {"type" : "integer"},
+                "titre" : {"type" : "string"}
+            }
+        },
+        "oeuvre" : {
+            "required" : ["oeuvre_id", "createur_id", "titre"],
+            "properties" : {
+                "oeuvre_id" : {"type" : "integer"},
+                "oeuvre_precedente_id" : {"type" : "integer"},
+                "createur_id" : {"type" : "integer"},
+                "type_oeuvre_id" : {"type" : "integer"},
+                "titre" : {"type" : "string"},
+                "date_creation" : {"type" : "string"},
+                "image_url" : {"type" : "string"},
+                "resume" : {"type" : "string"}
+            }
+        },
+        "oeuvre_vue" : {
+            "properties" : {
+                "oeuvre_id" : {"type" : "integer"},
+                "oeuvre_precedente_id" : {"type" : "integer"},
+                "oeuvre_precedente_titre" : {"type" : "string"},
+                "createur_id" : {"type" : "integer"},
+                "createur_prenom" : {"type" : "string"},
+                "createur_nom" : {"type" : "string"},
+                "type_oeuvre_id" : {"type" : "integer"},
+                "type_oeuvre_nom" : {"type" : "string"},
+                "type_oeuvre_description" : {"type" : "string"},
+                "titre" : {"type" : "string"},
+                "date_creation" : {"type" : "string"},
+                "image_url" : {"type" : "string"},
+                "resume" : {"type" : "string"},
+                "nb_chapitres" : {"type" : "integer"},
+                "nb_personnes" : {"type" : "integer"}
+            }
+        },
+        "chapitre_new" : {
+            "required" : ["oeuvre_id", "titre", "ordre"],
+            "properties" : {
+                "oeuvre_id" : {"type" : "integer"},
+                "titre" : {"type" : "string"},
+                "ordre" : {"type" : "integer"}
+            }
+        },
+        "chapitre" : {
+            "required" : ["chapitre_id", "oeuvre_id", "titre", "ordre"],
+            "properties" : {
+                "chapitre_id" : {"type" : "integer"},
+                "oeuvre_id" : {"type" : "integer"},
+                "narrateur_id" : {"type" : "integer"},
+                "titre" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "ordre" : {"type" : "integer"},
+                "date_naine_debut" : {"type" : "string"},
+                "date_naine_fin" : {"type" : "string"}
+            }
+        },
+        "chapitre_vue" : {
+            "properties" : {
+                "chapitre_id" : {"type" : "integer"},
+                "oeuvre_id" : {"type" : "integer"},
+                "oeuvre_titre" : {"type" : "string"},
+                "narrateur_id" : {"type" : "integer"},
+                "narrateur_nom" : {"type" : "string"},
+                "titre" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "ordre" : {"type" : "integer"},
+                "date_naine_debut" : {"type" : "string"},
+                "date_naine_fin" : {"type" : "string"},
+                "nb_citations" : {"type" : "integer"},
+                "nb_fiches" : {"type" : "integer"}
+            }
+        },
+        "citation_new" : {
+            "required" : ["titre", "description"],
+            "properties" : {
+                "titre" : {"type" : "string"},
+                "description" : {"type" : "string"}
+            }
+        },
+        "citation" : {
+            "required" : ["citation_id", "titre", "description"],
+            "properties" : {
+                "citation_id" : {"type" : "integer"},
+                "chapitre_id" : {"type" : "integer"},
+                "auteur_id" : {"type" : "integer"},
+                "titre" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "ordre" : {"type" : "integer"},
+                "date_naine" : {"type" : "string"}
+            }
+        },
+        "citation_vue" : {
+            "properties" : {
+                "citation_id" : {"type" : "integer"},
+                "chapitre_id" : {"type" : "integer"},
+                "chapitre_titre" : {"type" : "string"},
+                "auteur_id" : {"type" : "integer"},
+                "auteur_nom" : {"type" : "string"},
+                "titre" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "ordre" : {"type" : "integer"},
+                "date_naine" : {"type" : "string"}
+            }
+        },
+        "personne_new" : {
+            "required" : ["nom"],
+            "properties" : {
+                "prenom" : {"type" : "string"},
+                "nom" : {"type" : "string"}
+            }
+        },
+        "personne" : {
+            "required" : ["personne_id", "nom"],
+            "properties" : {
+                "personne_id" : {"type" : "integer"},
+                "prenom" : {"type" : "string"},
+                "nom" : {"type" : "string"},
+                "date_de_naissance" : {"type" : "string"},
+                "lieu_de_naissance" : {"type" : "string"}
+            }
+        },
+        "personne_vue" : {
+            "properties" : {
+                "personne_id" : {"type" : "integer"},
+                "prenom" : {"type" : "string"},
+                "nom" : {"type" : "string"},
+                "nom_complet" : {"type" : "string"},
+                "date_de_naissance" : {"type" : "string"},
+                "lieu_de_naissance" : {"type" : "string"},
+                "nb_oeuvres_contribution" : {"type" : "integer"},
+                "nb_fiches" : {"type" : "integer"}
+            }
+        },
+        "fiche_new" : {
+            "required" : ["type_fiche_id", "nom", "description"],
+            "properties" : {
+                "type_fiche_id" : {"type" : "integer"},
+                "nom" : {"type" : "string"},
+                "description" : {"type" : "string"}
+            }
+        },
+        "fiche" : {
+            "required" : ["fiche_id", "type_fiche_id", "nom", "description"],
+            "properties" : {
+                "fiche_id" : {"type" : "integer"},
+                "type_fiche_id" : {"type" : "integer"},
+                "nom" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "date_naine" : {"type" : "boolean"},
+                "date_debut" : {"type" : "string"},
+                "date_fin" : {"type" : "string"}
+            }
+        },
+        "fiche_vue" : {
+            "properties" : {
+                "fiche_id" : {"type" : "integer"},
+                "type_fiche_id" : {"type" : "integer"},
+                "type_fiche_nom" : {"type" : "string"},
+                "type_fiche_description" : {"type" : "string"},
+                "nom" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "date_naine" : {"type" : "boolean"},
+                "date_debut" : {"type" : "string"},
+                "date_fin" : {"type" : "string"},
+                "nb_chapitres" : {"type" : "integer"},
+                "nb_chapitres_narrateur" : {"type" : "integer"},
+                "nb_citations_auteur" : {"type" : "integer"},
+                "nb_fiches" : {"type" : "integer"},
+                "nb_informations" : {"type" : "integer"}
+            }
+        },
+        "type_fiche" : {
+            "properties" : {
+                "type_fiche_id" : {"type" : "integer"},
+                "nom" : {"type" : "string"},
+                "description" : {"type" : "string"},
+                "type_fiche_parent_id" : {"type" : "integer"}
+            }
+        },
+        "Users": {
+            "properties": {
+                "id": { "type": "integer" },
+                "nom": { "type": "string" },
+                "prenom": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+            }
+        },
+        "AuthCreated" : {
+            "properties" : {
+                "id" : { "type" : "integer"}
+            }
+        },
+        "Email" : {
+            "properties" : {
+                "email" : { "type" : "string"}
+            }
+        },
+        "AuthentificationOk" : {
+            "properties" : {
+                "jwt" : { "type" : "string"}
+            }
+        },
+        "client" : {
+            "properties": {
+                "client_id": {"type": "integer"},
+                "nom": { "type": "string" },
+                "prenom": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+            }
         }
     },
-    "personne_oeuvre" : {
-        "required" : ["oeuvre_id", "personne_id"],
-        "properties" : {
-            "oeuvre_id" : {"type" : "integer"},
-            "personne_id" : {"type" : "integer"},
-            "fonction" : {"type" : "string"},
-            "date_fonction" : {"type" : "string"},
-            "description" : {"type" : "string"}
+    "consumes": ["application/json"], 
+    "produces": ["application/json"],
+
+    "components" : {
+        "securitySchemes" : {
+            "alagaesiapi_auth" : {
+                "type" : "http",
+                "scheme" : "bearer",
+                "bearerFormat" : "JWT"
+            }
         }
     },
-    "oeuvre_new" : {
-        "required" : ["createur_id", "titre"],
-        "properties" : {
-            "createur_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"}
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in" : "header",
+            "description": ">- Enter the token with the `Bearer: ` prefix, e.g. Bearer abcde12345."
         }
     },
-    "oeuvre" : {
-        "required" : ["oeuvre_id", "createur_id", "titre"],
-        "properties" : {
-            "oeuvre_id" : {"type" : "integer"},
-            "oeuvre_precedente_id" : {"type" : "integer"},
-            "createur_id" : {"type" : "integer"},
-            "type_oeuvre_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
-            "date_creation" : {"type" : "string"},
-            "image_url" : {"type" : "string"},
-            "resume" : {"type" : "string"}
-        }
-    },
-    "oeuvre_vue" : {
-        "properties" : {
-            "oeuvre_id" : {"type" : "integer"},
-            "oeuvre_precedente_id" : {"type" : "integer"},
-            "oeuvre_precedente_titre" : {"type" : "string"},
-            "createur_id" : {"type" : "integer"},
-            "createur_prenom" : {"type" : "string"},
-            "createur_nom" : {"type" : "string"},
-            "type_oeuvre_id" : {"type" : "integer"},
-            "type_oeuvre_nom" : {"type" : "string"},
-            "type_oeuvre_description" : {"type" : "string"},
-            "titre" : {"type" : "string"},
-            "date_creation" : {"type" : "string"},
-            "image_url" : {"type" : "string"},
-            "resume" : {"type" : "string"},
-            "nb_chapitres" : {"type" : "integer"},
-            "nb_personnes" : {"type" : "integer"}
-        }
-    },
-    "chapitre_new" : {
-        "required" : ["oeuvre_id", "titre", "ordre"],
-        "properties" : {
-            "oeuvre_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
-            "ordre" : {"type" : "integer"}
-        }
-    },
-    "chapitre" : {
-        "required" : ["chapitre_id", "oeuvre_id", "titre", "ordre"],
-        "properties" : {
-            "chapitre_id" : {"type" : "integer"},
-            "oeuvre_id" : {"type" : "integer"},
-            "narrateur_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "ordre" : {"type" : "integer"},
-            "date_naine_debut" : {"type" : "string"},
-            "date_naine_fin" : {"type" : "string"}
-        }
-    },
-    "chapitre_vue" : {
-        "properties" : {
-            "chapitre_id" : {"type" : "integer"},
-            "oeuvre_id" : {"type" : "integer"},
-            "oeuvre_titre" : {"type" : "string"},
-            "narrateur_id" : {"type" : "integer"},
-            "narrateur_nom" : {"type" : "string"},
-            "titre" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "ordre" : {"type" : "integer"},
-            "date_naine_debut" : {"type" : "string"},
-            "date_naine_fin" : {"type" : "string"},
-            "nb_citations" : {"type" : "integer"},
-            "nb_fiches" : {"type" : "integer"}
-        }
-    },
-    "citation_new" : {
-        "required" : ["titre", "description"],
-        "properties" : {
-            "titre" : {"type" : "string"},
-            "description" : {"type" : "string"}
-        }
-    },
-    "citation" : {
-        "required" : ["citation_id", "titre", "description"],
-        "properties" : {
-            "citation_id" : {"type" : "integer"},
-            "chapitre_id" : {"type" : "integer"},
-            "auteur_id" : {"type" : "integer"},
-            "titre" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "ordre" : {"type" : "integer"},
-            "date_naine" : {"type" : "string"}
-        }
-    },
-    "citation_vue" : {
-        "properties" : {
-            "citation_id" : {"type" : "integer"},
-            "chapitre_id" : {"type" : "integer"},
-            "chapitre_titre" : {"type" : "string"},
-            "auteur_id" : {"type" : "integer"},
-            "auteur_nom" : {"type" : "string"},
-            "titre" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "ordre" : {"type" : "integer"},
-            "date_naine" : {"type" : "string"}
-        }
-    },
-    "personne_new" : {
-        "required" : ["nom"],
-        "properties" : {
-            "prenom" : {"type" : "string"},
-            "nom" : {"type" : "string"}
-        }
-    },
-    "personne" : {
-        "required" : ["personne_id", "nom"],
-        "properties" : {
-            "personne_id" : {"type" : "integer"},
-            "prenom" : {"type" : "string"},
-            "nom" : {"type" : "string"},
-            "date_de_naissance" : {"type" : "string"},
-            "lieu_de_naissance" : {"type" : "string"}
-        }
-    },
-    "personne_vue" : {
-        "properties" : {
-            "personne_id" : {"type" : "integer"},
-            "prenom" : {"type" : "string"},
-            "nom" : {"type" : "string"},
-            "nom_complet" : {"type" : "string"},
-            "date_de_naissance" : {"type" : "string"},
-            "lieu_de_naissance" : {"type" : "string"},
-            "nb_oeuvres_contribution" : {"type" : "integer"},
-            "nb_fiches" : {"type" : "integer"}
-        }
-    },
-    "fiche_new" : {
-        "required" : ["type_fiche_id", "nom", "description"],
-        "properties" : {
-            "type_fiche_id" : {"type" : "integer"},
-            "nom" : {"type" : "string"},
-            "description" : {"type" : "string"}
-        }
-    },
-    "fiche" : {
-        "required" : ["fiche_id", "type_fiche_id", "nom", "description"],
-        "properties" : {
-            "fiche_id" : {"type" : "integer"},
-            "type_fiche_id" : {"type" : "integer"},
-            "nom" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "date_naine" : {"type" : "boolean"},
-            "date_debut" : {"type" : "string"},
-            "date_fin" : {"type" : "string"}
-        }
-    },
-    "fiche_vue" : {
-        "properties" : {
-            "fiche_id" : {"type" : "integer"},
-            "type_fiche_id" : {"type" : "integer"},
-            "type_fiche_nom" : {"type" : "string"},
-            "type_fiche_description" : {"type" : "string"},
-            "nom" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "date_naine" : {"type" : "boolean"},
-            "date_debut" : {"type" : "string"},
-            "date_fin" : {"type" : "string"},
-            "nb_chapitres" : {"type" : "integer"},
-            "nb_chapitres_narrateur" : {"type" : "integer"},
-            "nb_citations_auteur" : {"type" : "integer"},
-            "nb_fiches" : {"type" : "integer"},
-            "nb_informations" : {"type" : "integer"}
-        }
-    },
-    "type_fiche" : {
-        "properties" : {
-            "type_fiche_id" : {"type" : "integer"},
-            "nom" : {"type" : "string"},
-            "description" : {"type" : "string"},
-            "type_fiche_parent_id" : {"type" : "integer"}
-        }
+    "security" : {
+        "alagaesiapi_auth" : []
     }
-  }
 }

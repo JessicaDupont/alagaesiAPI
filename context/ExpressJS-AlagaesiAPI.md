@@ -165,6 +165,12 @@ app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 2. Créer dossier *models*
 3. Créer dossier *middlewares*
 4. Créer dossier *sql*
+## Authentification (Token)
+1. `ctrl`+`ù` : ouvrir le terminal
+2. `npm i jsonwebtoken`
+3. mettre en place le router + controller permettant la création et l'authentification
+4. création du middleware + utilisation dnas le router
+5. utilsiation du middleware dnas les autres controllers
 ## Database
 ### MySQL
 > pour un travail en local, il est nécessaire d'avoir installer un serveur virtuel tel que [Xampp](https://www.apachefriends.org/fr/index.html).
