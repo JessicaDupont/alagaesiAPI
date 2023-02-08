@@ -2,11 +2,11 @@ const dbConnect = require("../context/database/connect2db").get();
 let nomModel = "personnesModel";
 
 const personnesModel = {
-    create : (prenoms, nom) => {
-        if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+prenoms+"/"+nom)}
+    create : (prenom, nom, dateDN, lieuDN) => {
+        if(process.env.CONSOLE_LOG){console.log(nomModel+".create/"+prenom+"/"+nom)}
         return dbConnect.then((db) =>{
-            return db.query('insert into personnes (prenom, nom) '
-            +'values (?, ?)', [prenoms, nom])
+            return db.query('insert into personnes (prenom, nom, date_de_naissance, lieu_de_naissance) '
+            +'values (?, ?, ?, ?)', [prenom, nom, dateDN, lieuDN])
         })
     },
     getAll : () =>{

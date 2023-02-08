@@ -9,9 +9,9 @@ const AuthController = {
 
         const user = req.body
 
-        if (user.nom && user.prenom && user.email && user.password)
+        if (user.nom && user.prenom && user.email && user.mot_de_passe)
         {
-            AuthModel.create(user.prenom, user.nom, user.email, user.password)
+            AuthModel.create(user.prenom, user.nom, user.email, user.mot_de_passe)
             .then((result) => {
                 res.status(201).json({ id : result.insertId})
             })

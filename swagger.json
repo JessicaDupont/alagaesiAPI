@@ -1,957 +1,2172 @@
-{ 
-    "swagger": "2.0", 
-    "info": { 
-        "description": "Informations en français venues d'Alagaësia",
-        "version" : "1.0.0",
-        "title": "AlagaësiAPI", 
-        "contact" : {
-            "name": "Jessica Dupont",
-            "email": "jessica.dupont1990@gmail.com",
-            "url": "http://www.jessicadupont.be"
-        }
-    }, 
-    "host" : "https://alagaesiapi.ica.plus",
-    "basePath" : "/api/v1",
-
-    "tags": [ 
-        { 
-            "name": "Clients", 
-            "description": "Personnes pouvant utiliser l'API"
-        },{ 
-            "name": "Oeuvres", 
-            "description": "Informations sur les oeuvres liés à l'univers d'Alagaësia."
-        },{ 
-            "name": "Chapitres", 
-            "description": "Chapitres ou portions liées aux oeuvres."
-        },{ 
-            "name": "Citations", 
-            "description": "Citations liées, ou non, à un chapitre."
-        },{ 
-            "name": "Personnes", 
-            "description": "Personnes réelles ayant rejoint l'univers d'Alagaësia."
-        },{ 
-            "name": "Fiches", 
-            "description": "Informations détaillées sur le monde d'Alagaësia."
-        }
-    ],
-    "schemes" : ["http", "https"],
-    
-    
-    "paths": {
-    "clients" : {
-        "post" : {
-            "tags": ["Clients"],
-            "summary": "création d'un compte client",
-            "operationId": "addClient",
-            "parameters": [{
-                "in": "body",
-                "name": "body",
-                "description": "nouveau client",
-                "required": true,
-                "schema" : { "$ref" : "#/definitions/client"}
-            }],
-            "responses": {
-                "201" : {
-                    "description": "client créé",
-                    "schema": { "$ref": "#/definitions/AuthCreated" }
-                },
-                "500" : {
-                    "description": "impossible de créer le client"
-                }
-            },
-            "security": {
-                "alagaesiapi_auth": []
-            }
-        }
-    },
-    "/api/v1/auth/{email}" : {
-        "get" : {
-            "tags": ["Auth"],
-            "summary": "Authentification",
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": { "$ref": "#/definitions/AuthentificationOk" }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "email",
-                    "in": "path",
-                    "required": true,
-                    "description": "Email to authenticate users for get access token",
-                    "schema" : { "$ref" : "#/definitions/Email"},
-                    "default" : "string"
-                }
-            ]
-        }
-    },
-    "/api/v1/oeuvres" : {
-        "post" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "Ajout d'une oeuvre",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "nouvelle oeuvre",
-                "in" : "body",
-                "required" : true,
-                "description" : "informations pour la création d'une oeuvre",
-                "schema": {"$ref": "#/definitions/oeuvre_new"}
-                }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/oeuvre"}
-                }
-            }
-        },
-        "get" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "Liste de toutes les oeuvres.",
-            "security" : {"bearerAuth": []},
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/oeuvre_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/oeuvres/{id}" : {
-        "get" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "info d'une oeuvre",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de l'oeuvre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                        "schema": {"$ref" : "#/definitions/oeuvre_vue"}
-                    }
-            }
-        },
-        "patch" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "modification d'une oeuvre",
-            "security" : {"Bearer": []},
-            "parameters" : [
-                {
-                    "name" : "id",
-                    "in" : "path",
-                    "required" : true,
-                    "description" : "id de l'oeuvre",
-                    "default" : "1"
-                    },{
-                        "name" : "oeuvre_up",
-                    "in" : "body",
-                    "required" : true,
-                    "description" : "infos d'une oeuvre",
-                    "schema": {"$ref" : "#/definitions/oeuvre"}
-                }
-            ],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/oeuvre"}
-                }
-            }
-        },
-        "delete" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "suppression d'une oeuvre",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de l'oeuvre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/oeuvre"}
-                }
-            }
-        }
-    },
-    "/api/v1/oeuvres/types" : {
-        "get" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "Liste de tout les types d'oeuvres.",
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/type_oeuvre"}
-                }
-            }
-        }
-    },
-    "/api/v1/oeuvres/personne/{id}" : {
-        "post" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "Lié une personne à une oeuvre",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de l'oeuvre",
-                "default" : "1"
-                },{
-                    "name" : "nouveau lien",
-                    "in" : "body",
-                "required" : true,
-                "description" : "permet de lier une personne à une oeuvre",
-                "schema": {"$ref": "#/definitions/personne_oeuvre"}
-            }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/personne_oeuvre"}
-                }
-            }
-        },
-        "get" : {
-            "tags" : ["Oeuvres"],
-            "summary" : "liste des oeuvres liées à une personne",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la personne",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                        "schema": {"$ref" : "#/definitions/oeuvre_vue"}
-                    }
-            }
-        }
-    },
-    "/api/v1/chapitres" : {
-        "post" : {
-            "tags" : ["Chapitres"],
-            "summary" : "Ajout d'un chapitre",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "nouveau chapitre",
-                "in" : "body",
-                "required" : true,
-                "description" : "informations pour la création d'un chapitre",
-                "schema": {"$ref": "#/definitions/chapitre_new"}
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                        "schema": {"$ref" : "#/definitions/chapitre"}
-                    }
-            }
-        },
-        "get" : {
-            "tags" : ["Chapitres"],
-            "summary" : "Liste de tout les chapitres",
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/chapitre_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/chapitres/{id}" : {
-        "get" : {
-            "tags" : ["Chapitres"],
-            "summary" : "info d'un chapitre",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id du chapitre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/chapitre_vue"}
-                }
-            }
-        },
-        "patch" : {
-            "tags" : ["Chapitres"],
-            "summary" : "modification d'un chapitre",
-            "security" : {"Bearer": []},
-            "parameters" : [
-                {
-                    "name" : "id",
-                    "in" : "path",
-                    "required" : true,
-                    "description" : "id du chapitre",
-                    "default" : "1"
-                    },{
-                        "name" : "chapitre_up",
-                        "in" : "body",
-                    "required" : true,
-                    "description" : "infos d'un chapitre",
-                    "schema": {"$ref" : "#/definitions/chapitre"}
-                }
-            ],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/chapitre"}
-                }
-            }
-        },
-        "delete" : {
-            "tags" : ["Chapitres"],
-            "summary" : "suppression d'un chapitre",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id du chapitre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/chapitre"}
-                }
-            }
-        }
-    },
-    "/api/v1/citations" : {
-        "post" : {
-            "tags" : ["Citations"],
-            "summary" : "Ajout d'une citation",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "nouvelle citation",
-                "in" : "body",
-                "required" : true,
-                "description" : "informations pour la création d'une citation",
-                "schema": {"$ref": "#/definitions/citation_new"}
-                }],
-                "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation"}
-                }
-            }
-        },
-        "get" : {
-            "tags" : ["Citations"],
-            "summary" : "Liste de toutes les citations",
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/citation_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/citations/{id}" : {
-        "get" : {
-            "tags" : ["Citations"],
-            "summary" : "info d'une citation",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la citation",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation_vue"}
-                }
-            }
-        },
-        "patch" : {
-            "tags" : ["Citations"],
-            "summary" : "modification d'une citation",
-            "security" : {"Bearer": []},
-            "parameters" : [
-                {
-                    "name" : "id",
-                    "in" : "path",
-                    "required" : true,
-                    "description" : "id de la citation",
-                    "default" : "1"
-                    },{
-                        "name" : "citation_up",
-                    "in" : "body",
-                    "required" : true,
-                    "description" : "infos d'une citation",
-                    "schema": {"$ref" : "#/definitions/citation"}
-                }
-            ],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation"}
-                }
-            }
-        },
-        "delete" : {
-            "tags" : ["Citations"],
-            "summary" : "suppression d'une citation",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la citation",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation"}
-                }
-            }
-        }
-    },
-    "/api/v1/citations/oeuvre/{id}" : {
-        "get" : {
-            "tags" : ["Citations"],
-            "summary" : "Liste des citations liées à une oeuvre",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de l'oeuvre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/citations/chapitre/{id}" : {
-        "get" : {
-            "tags" : ["Citations"],
-            "summary" : "Liste des citations liées à un chapitre",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id du chapitre",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/citation_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/fiches" : {
-        "post" : {
-            "tags" : ["Fiches"],
-            "summary" : "Ajout d'une fiche",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "nouvelle fiche",
-                "in" : "body",
-                "required" : true,
-                "description" : "informations pour la création d'une fiche",
-                "schema": {"$ref": "#/definitions/fiche_new"}
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/fiche"}
-                }
-            }
-        },
-        "get" : {
-            "tags" : ["Fiches"],
-            "summary" : "Liste de toutes les fiches",
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/fiche_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/fiches/{id}" : {
-        "get" : {
-            "tags" : ["Fiches"],
-            "summary" : "info d'une fiche",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la fiche",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                    "schema": {"$ref" : "#/definitions/fiche_vue"}
-                }
-            }
-        },
-        "patch" : {
-            "tags" : ["Fiches"],
-            "summary" : "modification d'une fiche",
-            "security" : {"Bearer": []},
-            "parameters" : [
-                {
-                    "name" : "id",
-                    "in" : "path",
-                    "required" : true,
-                    "description" : "id de la fiche",
-                    "default" : "1"
-                    },{
-                        "name" : "fiche_up",
-                    "in" : "body",
-                    "required" : true,
-                    "description" : "infos d'une fiche",
-                    "schema": {"$ref" : "#/definitions/fiche"}
-                }
-            ],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/fiche"}
-                }
-            }
-        },
-        "delete" : {
-            "tags" : ["Fiches"],
-            "summary" : "suppression d'une fiche",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la fiche",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                        "schema": {"$ref" : "#/definitions/fiche"}
-                    }
-            }
-        }
-    },
-    "/api/v1/fiches/types" : {
-        "get" : {
-            "tags" : ["Fiches"],
-            "summary" : "tous les types de fiches",
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/type_fiche"}
-                }
-            }
-        }
-    },
-    "/api/v1/fiches/type/{id}" : {
-        "get" : {
-            "tags" : ["Fiches"],
-            "summary" : "toutes les fiches par type",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id du type de fiche",
-                "default" : "1"
-                }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/fiche_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/personnes" : {
-        "post" : {
-            "tags" : ["Personnes"],
-            "summary" : "Ajout d'une personne",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "nouvelle personne",
-                "in" : "body",
-                "required" : true,
-                "description" : "informations pour la création d'une personne",
-                "schema": {"$ref": "#/definitions/personne_new"}
-                }],
-                "responses": {
-                    "200" : {
-                        "description": "OK",
-                    "schema": {"$ref" : "#/definitions/personne"}
-                }
-            }
-        },
-        "get" : {
-            "tags" : ["Personnes"],
-            "summary" : "Liste de toutes les personnes",
-            "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/personne_vue"}
-                }
-            }
-        }
-    },
-    "/api/v1/personnes/{id}" : {
-        "get" : {
-            "tags" : ["Personnes"],
-            "summary" : "info d'une personne",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la personne",
-                "default" : "1"
-                }],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/personne_vue"}
-                }
-            }
-        },
-        "patch" : {
-            "tags" : ["Personnes"],
-            "summary" : "modification d'une personne",
-            "security" : {"Bearer": []},
-            "parameters" : [
-                {
-                    "name" : "id",
-                    "in" : "path",
-                    "required" : true,
-                    "description" : "id de la personne",
-                    "default" : "1"
-                    },{
-                        "name" : "personne_up",
-                    "in" : "body",
-                    "required" : true,
-                    "description" : "infos d'une personne",
-                    "schema": {"$ref" : "#/definitions/personne"}
-                }
-            ],
-            "responses": {
-                "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/personne"}
-                }
-            }
-        },
-        "delete" : {
-            "tags" : ["Personnes"],
-            "summary" : "suppression d'une personne",
-            "security" : {"Bearer": []},
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de la personne",
-                "default" : "1"
-                }],
-                "responses": {
-                    "200" : {
-                    "description": "OK",
-                    "schema": {"$ref" : "#/definitions/personne"}
-                }
-            }
-        }
-    },
-    "/api/v1/personnes/oeuvre/{id}" : {
-        "get" : {
-            "tags" : ["Personnes"],
-            "summary" : "Liste de toutes les personnes ayant participé à l'oeuvre",
-            "parameters" : [{
-                "name" : "id",
-                "in" : "path",
-                "required" : true,
-                "description" : "id de l'oeuvre",
-                "default" : "1"
-                }],
-                "responses" : {
-                "200" : {
-                    "description" : "OK",
-                    "schema" : {"$ref" : "#/definitions/personne_vue"}
-                }
-            }
-        }
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Informations en français sur l'Alagaësia, univers créé par Christopher Paolini dans le Cycle de l'Héritage.",
+    "version": "1.0.0",
+    "title": "AlagaësiAPI",
+    "contact": {
+      "name": "Jessica Dupont",
+      "email": "jessica.dupont1990@gmail.com",
+      "url": "https://www.jessicadupont.be"
     }
   },
-  
-  "definitions": {
-        "type_oeuvre" : {
-            "properties" : {
-                "type_oeuvre_id" : {"type" : "integer"},
-                "nom" : {"type" : "string"}
-            }
-        },
-        "personne_oeuvre" : {
-            "required" : ["oeuvre_id", "personne_id"],
-            "properties" : {
-                "oeuvre_id" : {"type" : "integer"},
-                "personne_id" : {"type" : "integer"},
-                "fonction" : {"type" : "string"},
-                "date_fonction" : {"type" : "string"},
-                "description" : {"type" : "string"}
-            }
-        },
-        "oeuvre_new" : {
-            "required" : ["createur_id", "titre"],
-            "properties" : {
-                "createur_id" : {"type" : "integer"},
-                "titre" : {"type" : "string"}
-            }
-        },
-        "oeuvre" : {
-            "required" : ["oeuvre_id", "createur_id", "titre"],
-            "properties" : {
-                "oeuvre_id" : {"type" : "integer"},
-                "oeuvre_precedente_id" : {"type" : "integer"},
-                "createur_id" : {"type" : "integer"},
-                "type_oeuvre_id" : {"type" : "integer"},
-                "titre" : {"type" : "string"},
-                "date_creation" : {"type" : "string"},
-                "image_url" : {"type" : "string"},
-                "resume" : {"type" : "string"}
-            }
-        },
-        "oeuvre_vue" : {
-            "properties" : {
-                "oeuvre_id" : {"type" : "integer"},
-                "oeuvre_precedente_id" : {"type" : "integer"},
-                "oeuvre_precedente_titre" : {"type" : "string"},
-                "createur_id" : {"type" : "integer"},
-                "createur_prenom" : {"type" : "string"},
-                "createur_nom" : {"type" : "string"},
-                "type_oeuvre_id" : {"type" : "integer"},
-                "type_oeuvre_nom" : {"type" : "string"},
-                "type_oeuvre_description" : {"type" : "string"},
-                "titre" : {"type" : "string"},
-                "date_creation" : {"type" : "string"},
-                "image_url" : {"type" : "string"},
-                "resume" : {"type" : "string"},
-                "nb_chapitres" : {"type" : "integer"},
-                "nb_personnes" : {"type" : "integer"}
-            }
-        },
-        "chapitre_new" : {
-            "required" : ["oeuvre_id", "titre", "ordre"],
-            "properties" : {
-                "oeuvre_id" : {"type" : "integer"},
-                "titre" : {"type" : "string"},
-                "ordre" : {"type" : "integer"}
-            }
-        },
-        "chapitre" : {
-            "required" : ["chapitre_id", "oeuvre_id", "titre", "ordre"],
-            "properties" : {
-                "chapitre_id" : {"type" : "integer"},
-                "oeuvre_id" : {"type" : "integer"},
-                "narrateur_id" : {"type" : "integer"},
-                "titre" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "ordre" : {"type" : "integer"},
-                "date_naine_debut" : {"type" : "string"},
-                "date_naine_fin" : {"type" : "string"}
-            }
-        },
-        "chapitre_vue" : {
-            "properties" : {
-                "chapitre_id" : {"type" : "integer"},
-                "oeuvre_id" : {"type" : "integer"},
-                "oeuvre_titre" : {"type" : "string"},
-                "narrateur_id" : {"type" : "integer"},
-                "narrateur_nom" : {"type" : "string"},
-                "titre" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "ordre" : {"type" : "integer"},
-                "date_naine_debut" : {"type" : "string"},
-                "date_naine_fin" : {"type" : "string"},
-                "nb_citations" : {"type" : "integer"},
-                "nb_fiches" : {"type" : "integer"}
-            }
-        },
-        "citation_new" : {
-            "required" : ["titre", "description"],
-            "properties" : {
-                "titre" : {"type" : "string"},
-                "description" : {"type" : "string"}
-            }
-        },
-        "citation" : {
-            "required" : ["citation_id", "titre", "description"],
-            "properties" : {
-                "citation_id" : {"type" : "integer"},
-                "chapitre_id" : {"type" : "integer"},
-                "auteur_id" : {"type" : "integer"},
-                "titre" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "ordre" : {"type" : "integer"},
-                "date_naine" : {"type" : "string"}
-            }
-        },
-        "citation_vue" : {
-            "properties" : {
-                "citation_id" : {"type" : "integer"},
-                "chapitre_id" : {"type" : "integer"},
-                "chapitre_titre" : {"type" : "string"},
-                "auteur_id" : {"type" : "integer"},
-                "auteur_nom" : {"type" : "string"},
-                "titre" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "ordre" : {"type" : "integer"},
-                "date_naine" : {"type" : "string"}
-            }
-        },
-        "personne_new" : {
-            "required" : ["nom"],
-            "properties" : {
-                "prenom" : {"type" : "string"},
-                "nom" : {"type" : "string"}
-            }
-        },
-        "personne" : {
-            "required" : ["personne_id", "nom"],
-            "properties" : {
-                "personne_id" : {"type" : "integer"},
-                "prenom" : {"type" : "string"},
-                "nom" : {"type" : "string"},
-                "date_de_naissance" : {"type" : "string"},
-                "lieu_de_naissance" : {"type" : "string"}
-            }
-        },
-        "personne_vue" : {
-            "properties" : {
-                "personne_id" : {"type" : "integer"},
-                "prenom" : {"type" : "string"},
-                "nom" : {"type" : "string"},
-                "nom_complet" : {"type" : "string"},
-                "date_de_naissance" : {"type" : "string"},
-                "lieu_de_naissance" : {"type" : "string"},
-                "nb_oeuvres_contribution" : {"type" : "integer"},
-                "nb_fiches" : {"type" : "integer"}
-            }
-        },
-        "fiche_new" : {
-            "required" : ["type_fiche_id", "nom", "description"],
-            "properties" : {
-                "type_fiche_id" : {"type" : "integer"},
-                "nom" : {"type" : "string"},
-                "description" : {"type" : "string"}
-            }
-        },
-        "fiche" : {
-            "required" : ["fiche_id", "type_fiche_id", "nom", "description"],
-            "properties" : {
-                "fiche_id" : {"type" : "integer"},
-                "type_fiche_id" : {"type" : "integer"},
-                "nom" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "date_naine" : {"type" : "boolean"},
-                "date_debut" : {"type" : "string"},
-                "date_fin" : {"type" : "string"}
-            }
-        },
-        "fiche_vue" : {
-            "properties" : {
-                "fiche_id" : {"type" : "integer"},
-                "type_fiche_id" : {"type" : "integer"},
-                "type_fiche_nom" : {"type" : "string"},
-                "type_fiche_description" : {"type" : "string"},
-                "nom" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "date_naine" : {"type" : "boolean"},
-                "date_debut" : {"type" : "string"},
-                "date_fin" : {"type" : "string"},
-                "nb_chapitres" : {"type" : "integer"},
-                "nb_chapitres_narrateur" : {"type" : "integer"},
-                "nb_citations_auteur" : {"type" : "integer"},
-                "nb_fiches" : {"type" : "integer"},
-                "nb_informations" : {"type" : "integer"}
-            }
-        },
-        "type_fiche" : {
-            "properties" : {
-                "type_fiche_id" : {"type" : "integer"},
-                "nom" : {"type" : "string"},
-                "description" : {"type" : "string"},
-                "type_fiche_parent_id" : {"type" : "integer"}
-            }
-        },
-        "Users": {
-            "properties": {
-                "id": { "type": "integer" },
-                "nom": { "type": "string" },
-                "prenom": { "type": "string" },
-                "email": { "type": "string" },
-                "password": { "type": "string" }
-            }
-        },
-        "AuthCreated" : {
-            "properties" : {
-                "id" : { "type" : "integer"}
-            }
-        },
-        "Email" : {
-            "properties" : {
-                "email" : { "type" : "string"}
-            }
-        },
-        "AuthentificationOk" : {
-            "properties" : {
-                "jwt" : { "type" : "string"}
-            }
-        },
-        "client" : {
-            "properties": {
-                "client_id": {"type": "integer"},
-                "nom": { "type": "string" },
-                "prenom": { "type": "string" },
-                "email": { "type": "string" },
-                "password": { "type": "string" }
-            }
-        }
+  "tags": [
+    {
+      "name": "Clients",
+      "description": "Utilisateurs de l'API"
     },
-    "consumes": ["application/json"], 
-    "produces": ["application/json"],
-
-    "components" : {
-        "securitySchemes" : {
-            "alagaesiapi_auth" : {
-                "type" : "http",
-                "scheme" : "bearer",
-                "bearerFormat" : "JWT"
-            }
-        }
+    {
+      "name": "Personnes",
+      "description": "Personnes réelles ayant un rapport avec l'Alagaësia"
     },
-    "securityDefinitions": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in" : "header",
-            "description": ">- Enter the token with the `Bearer: ` prefix, e.g. Bearer abcde12345."
-        }
+    {
+      "name": "Personnes-Oeuvres",
+      "description": "Liens entre les personnes et les oeuvres"
     },
-    "security" : {
-        "alagaesiapi_auth" : []
+    {
+      "name": "Oeuvres",
+      "description": "Oeuvres reliée à l'Alagaësia"
+    },
+    {
+      "name": "Chapitres",
+      "description": "Portions d'oeuvres"
+    },
+    {
+      "name": "Fiches-Chapitres",
+      "description": "Liens entre les chapitres et les fiches"
+    },
+    {
+      "name": "Fiches",
+      "description": "éléments de l'Alagaësia"
+    },
+    {
+      "name": "Fiches-Fiches",
+      "description": "Liens entre les fiches"
+    },
+    {
+      "name": "Fiches-Informations",
+      "description": "Information particulière d'une fiche"
+    },
+    {
+      "name": "Fiches-Personnes",
+      "description": "Fiche ayant un rapport avec une personne réelle"
+    },
+    {
+      "name": "Citations",
+      "description": "Citations provenant des oeuvres ou des personnes réelles"
     }
+  ],
+  "host": "127.0.0.1:3000",
+  "basePath": "/api/v1",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "APIKeyHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "alagaesia-API-Key"
+    }
+  },
+  "paths": {
+    "/Clients": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Inscription",
+        "operationId": "inscriptionClient",
+        "parameters": [
+          {
+            "name": "newClient",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdminClient"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Connexion",
+        "operationId": "connexionClientBody",
+        "parameters": [
+          {
+            "name": "client",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AdminClient"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "JWT": {
+                  "type": "string",
+                  "description": "token"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Clients/{email}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Connexion",
+        "operationId": "connexionClientPath",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "JWT": {
+                  "type": "string",
+                  "description": "token"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Personnes": {
+      "post": {
+        "tags": [
+          "Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addPersonne",
+        "parameters": [
+          {
+            "name": "newPersonne",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Personne"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllPersonnes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Personne"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Personnes/oeuvre/{id}": {
+      "get": {
+        "tags": [
+          "Personnes-Oeuvres"
+        ],
+        "summary": "toutes les personnes ayant participé à une oeuvre",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllPersonnesByOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PersonneOeuvre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Personnes/{id}": {
+      "get": {
+        "tags": [
+          "Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getPersonne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Personne"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "correctPersonne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "personne",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Personne"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "deletePersonne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Oeuvres/personne/{id}": {
+      "post": {
+        "tags": [
+          "Personnes-Oeuvres"
+        ],
+        "summary": "lié une personne à une oeuvre",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addPersonneOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "newPersonneOeuvre",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/PersonneOeuvre"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Personnes-Oeuvres"
+        ],
+        "summary": "liste des oeuvres liées à une personne",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllOeuvresByPersonne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PersonneOeuvre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Oeuvres": {
+      "post": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addOeuvre",
+        "parameters": [
+          {
+            "name": "newOeuvre",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Oeuvre"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllOeuvres",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Oeuvre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Oeuvres/types": {
+      "get": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "summary": "liste des types d'oeuvres",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllTypesOeuvres",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TypeOeuvre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Oeuvres/{id}": {
+      "get": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Oeuvre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "correctOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "oeuvre",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Oeuvre"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Oeuvres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "deleteOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Chapitres": {
+      "post": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addChapitre",
+        "parameters": [
+          {
+            "name": "newChapitre",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Chapitre"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllChapitres",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Chapitre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Chapitres/oeuvre/{id}": {
+      "get": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getChapitresByOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Chapitre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Chapitres/fiche/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getChapitresByFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FicheChapitre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Chapitres/{id}": {
+      "get": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getChapitre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Chapitre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "correctChapitre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "chapitre",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Chapitre"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "deleteChapitre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches": {
+      "post": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addFiche",
+        "parameters": [
+          {
+            "name": "newFiche",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllFiches",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Fiches/types": {
+      "get": {
+        "tags": [
+          "Fiches"
+        ],
+        "summary": "liste des types de fiches",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllTypesFiches",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TypeFiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Fiches/type/{id}": {
+      "get": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "summary": "toutes les fiches selon leur typeFiche",
+        "operationId": "getFicheByTypeFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches/chapitre/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "summary": "toutes les fiches liée au chapitre",
+        "operationId": "getFicheByChapitre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FicheChapitre"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches/oeuvre/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Chapitres"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "summary": "toutes les fiches liée à l'oeuvre",
+        "operationId": "getFicheByOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches/fiche/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "summary": "toutes les fiches liée à la fiche",
+        "operationId": "getFichesByFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches/personne/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Personnes"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getFichesByPersonne",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Fiches/{id}": {
+      "get": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "upFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "fiche",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "correctFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "fiche",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Fiche"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Fiches"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "deleteFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Informations/types": {
+      "get": {
+        "tags": [
+          "Fiches-Informations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "summary": "liste des types d'informations",
+        "operationId": "getAllTypesInformations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TypeInformation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Informations/fiche/{id}": {
+      "get": {
+        "tags": [
+          "Fiches-Informations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getInformationsByFiche",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/FicheInformation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Citations": {
+      "post": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "addCitation",
+        "parameters": [
+          {
+            "name": "newCitation",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "identifiant du nouvel élément"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getAllCitations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/Citations/oeuvre/{id}": {
+      "get": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getCitationsByOeuvre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Citations/chapitre/{id}": {
+      "get": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getCitationsByChapitre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    },
+    "/Citations/{id}": {
+      "get": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "getCitation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "upCitation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "citation",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "correctCitation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "citation",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Citation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Citations"
+        ],
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "operationId": "deleteCitation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "description": "KO"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "NotFound": {
+      "description": "Aucun résultat n'a été trouvé",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    },
+    "Unauthorized": {
+      "description": "Vous n'avez pas accès à cette ressource. Veuillez vous connectez ou élever votre niveau d'accès.",
+      "schema": {
+        "$ref": "#/definitions/Error"
+      }
+    }
+  },
+  "definitions": {
+    "AdminClient": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "prenom": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "mot_de_passe": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "client_id",
+        "nom",
+        "email",
+        "mot_de_passe"
+      ]
+    },
+    "Chapitre": {
+      "type": "object",
+      "properties": {
+        "chapitre_id": {
+          "type": "integer"
+        },
+        "oeuvre_id": {
+          "type": "integer"
+        },
+        "oeuvre": {
+          "$ref": "#/definitions/Oeuvre"
+        },
+        "narrateur_id": {
+          "type": "integer"
+        },
+        "narrateur": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "titre": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "ordre": {
+          "type": "integer"
+        },
+        "date_naine_debut": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "date_naine_fin": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "chapitre_id",
+        "oeuvre_id",
+        "titre",
+        "ordre"
+      ]
+    },
+    "Citation": {
+      "type": "object",
+      "properties": {
+        "citation_id": {
+          "type": "integer"
+        },
+        "chapitre_id": {
+          "type": "integer"
+        },
+        "chapitre": {
+          "$ref": "#/definitions/Chapitre"
+        },
+        "auteur_id": {
+          "type": "integer"
+        },
+        "auteur": {
+          "$ref": "#/definitions/Personne"
+        },
+        "titre": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "ordre": {
+          "type": "integer"
+        },
+        "date_naine": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "citation_id",
+        "titre",
+        "description"
+      ]
+    },
+    "Fiche": {
+      "type": "object",
+      "properties": {
+        "fiche_id": {
+          "type": "integer"
+        },
+        "type_fiche_id": {
+          "type": "integer"
+        },
+        "type_fiche": {
+          "$ref": "#/definitions/TypeFiche"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_naine": {
+          "type": "boolean",
+          "default": true
+        },
+        "date_debut": {
+          "type": "integer",
+          "format": "date-time"
+        },
+        "date_fin": {
+          "type": "integer",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "fiche_id",
+        "type_fiche_id",
+        "nom",
+        "description",
+        "date_naine"
+      ]
+    },
+    "FicheChapitre": {
+      "type": "object",
+      "properties": {
+        "chapitre_id": {
+          "type": "integer"
+        },
+        "chapitre": {
+          "$ref": "#/definitions/Chapitre"
+        },
+        "fiche_id": {
+          "type": "integer"
+        },
+        "fiche": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "chapitre_id",
+        "fiche_id"
+      ]
+    },
+    "FicheFiche": {
+      "type": "object",
+      "properties": {
+        "fiche_id_1": {
+          "type": "integer"
+        },
+        "fiche_1": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "fiche_id_2": {
+          "type": "integer"
+        },
+        "fiche_2": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fiche_id_1",
+        "fiche_id_2"
+      ]
+    },
+    "FicheInformation": {
+      "type": "object",
+      "properties": {
+        "fiche_id": {
+          "type": "integer"
+        },
+        "fiche": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "type_information_id": {
+          "type": "integer"
+        },
+        "type_information": {
+          "$ref": "#/definitions/TypeInformation"
+        },
+        "valeur_information": {
+          "type": "string"
+        },
+        "description_information": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fiche_id",
+        "type_information_id",
+        "valeur_information"
+      ]
+    },
+    "FichePersonne": {
+      "type": "object",
+      "properties": {
+        "fiche_id": {
+          "type": "integer"
+        },
+        "fiche": {
+          "$ref": "#/definitions/Fiche"
+        },
+        "personne_id": {
+          "type": "integer"
+        },
+        "personne": {
+          "$ref": "#/definitions/Personne"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "personne_id",
+        "fiche_id"
+      ]
+    },
+    "Oeuvre": {
+      "type": "object",
+      "properties": {
+        "oeuvre_id": {
+          "type": "integer"
+        },
+        "oeuvre_precedente_id": {
+          "type": "integer"
+        },
+        "createur_id": {
+          "type": "integer"
+        },
+        "createur": {
+          "$ref": "#/definitions/Personne"
+        },
+        "type_oeuvre_id": {
+          "type": "integer"
+        },
+        "type_oeuvre": {
+          "$ref": "#/definitions/TypeOeuvre"
+        },
+        "titre": {
+          "type": "string"
+        },
+        "date_creation": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "resume": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "oeuvre_id",
+        "createur_id",
+        "titre"
+      ]
+    },
+    "Personne": {
+      "type": "object",
+      "properties": {
+        "personne_id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "prenom": {
+          "type": "string"
+        },
+        "date_de_naissance": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lieu_de_naissance": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "personne_id",
+        "nom"
+      ]
+    },
+    "PersonneOeuvre": {
+      "type": "object",
+      "properties": {
+        "oeuvre_id": {
+          "type": "integer"
+        },
+        "oeuvre": {
+          "$ref": "#/definitions/Oeuvre"
+        },
+        "personne_id": {
+          "type": "integer"
+        },
+        "personne": {
+          "$ref": "#/definitions/Personne"
+        },
+        "fonction": {
+          "type": "string"
+        },
+        "date_fonction": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "oeuvre_id",
+        "personne_id"
+      ]
+    },
+    "TypeFiche": {
+      "type": "object",
+      "properties": {
+        "type_fiche_id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type_fiche_parent_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type_fiche_id",
+        "nom"
+      ]
+    },
+    "TypeInformation": {
+      "type": "object",
+      "properties": {
+        "type_information_id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "type_information_parent_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type_information_id",
+        "nom"
+      ]
+    },
+    "TypeOeuvre": {
+      "type": "object",
+      "properties": {
+        "type_oeuvre_id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type_oeuvre_parent_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type_oeuvre_id",
+        "nom"
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ]
+    }
+  }
 }

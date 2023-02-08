@@ -11,14 +11,16 @@ let nomControler = "personnesController"
 const personnesController = {
     create : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".create")}
-        let {prenom, nom} = req.body;
-        personnesModel.create(prenom, nom)
+        let new_prenom = req.body.prenom ?? null;
+        let new_nom = req.body.nom;
+        let new_dateDN = req.body.date_de_naissance ?? null;
+        let new_lieuDN = req.body.lieu_de_naissance ?? null;
+        personnesModel.create(new_prenom, new_nom, new_dateDN, new_lieuDN)
         .then((result) =>{res.status(201).json({id : result.insertId})})
         .catch((error) =>{res.status(500).json({message : error.slqMessage})})
     },
     getAll : (req, res) => {
         if(process.env.CONSOLE_LOG){console.log(nomControler+".getAll")}
-        // personnesModel.getByOeuvre(1)
         personnesModel.getAll()
         .then((all) => {res.status(200).json(all)})
         .catch((error) =>{res.status(500).json({message : error.sqlMessage})})

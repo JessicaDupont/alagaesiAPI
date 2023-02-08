@@ -2,13 +2,13 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 module.exports = (req, res, next) => {
-
-    // console.log(req.headers)
-    if(req.headers["authorization"])    
+    if(process.env.CONSOLE_LOG){console.log("MIDDLEWARE : auth")}
+    // console.log("TEST NOM: "+req.headers['alagaesia-api-key'])
+    if(req.headers['alagaesia-api-key'])    
     {
         // console.log(req.headers);
-        let token = req.headers["authorization"].replace(/^Bearer\s+/, "");
-        // console.log(token);
+        let token = req.headers['alagaesia-api-key'];
+        // console.log("TOKEN: "+token);
         let result = jwt.verify(token, process.env.JWT_KEY)
         // console.log(result);
 
